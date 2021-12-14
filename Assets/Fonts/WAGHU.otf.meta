@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 760b1f322f8a0534bafa343b2a2fc2c3
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - WAGHU
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c20ebc0dda7a8ef4bb78586aca57c356, type: 3}
+  - {fileID: 12800000, guid: 50fb7ef57d4b78846944db5a78404e31, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -37,22 +37,24 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Item\Item.cs" />
+     <Compile Include="Assets\Scripts\UI\Destroyer.cs" />
      <Compile Include="Assets\Scripts\Hero\Sensor_HeroKnight.cs" />
-     <Compile Include="Assets\Scripts\MenuController.cs" />
-     <Compile Include="Assets\Scripts\CameraController.cs" />
+     <Compile Include="Assets\Scripts\UI\MenuController.cs" />
+     <Compile Include="Assets\Scripts\UI\CameraController.cs" />
+     <Compile Include="Assets\Scripts\UI\ItemInventoryBehaviour.cs" />
+     <Compile Include="Assets\Scripts\Item\PickUpItem.cs" />
+     <Compile Include="Assets\Scripts\Item\MP.cs" />
+     <Compile Include="Assets\Scripts\Item\HP.cs" />
      <Compile Include="Assets\Scripts\Hero\HeroKnight.cs" />
+     <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\DBManager.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Hero\DestroyEvent_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\LoginController.cs" />
      <Compile Include="Assets\Scripts\UI\InventoryController.cs" />
-     <Compile Include="Assets\Scripts\GameController.cs" />
-     <Compile Include="Assets\Scripts\Item\PickUpItem.cs" />
-     <Compile Include="Assets\Scripts\Destroyer.cs" />
-     <Compile Include="Assets\Scripts\Item\Item.cs" />
-     <Compile Include="Assets\Scripts\Item\HP.cs" />
-     <Compile Include="Assets\Scripts\Item\MP.cs" />
-     <Compile Include="Assets\Scripts\DBManager.cs" />
-     <Compile Include="Assets\Scripts\UI\ItemInventoryBehaviour.cs" />
+     <Compile Include="Assets\Scripts\Enemy\TestEnemy.cs" />
+     <Compile Include="Assets\Scripts\Enemy\EnemyController.cs" />
      <None Include="Assets\Hero Knight - Pixel Art\ColorSwap\Sprites-ColorSwap.shader" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.24f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

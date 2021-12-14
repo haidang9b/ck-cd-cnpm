@@ -16,6 +16,14 @@ public class PlayerController : MonoBehaviour
     public Transform attackPointLeft;
     public float attackRange = 0.5f;
 
+    // rate of character
+    public int maxHeath;
+    public int currentHealth;
+    public int maxMana;
+    public int currentMana;
+    public int dame;
+
+    // end rate character
     public LayerMask enemyLayers;
 
     private Animator animator;
@@ -48,6 +56,8 @@ public class PlayerController : MonoBehaviour
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
+
+        LoadDataCharacter();
     }
 
     // Update is called once per frame
@@ -205,6 +215,7 @@ public class PlayerController : MonoBehaviour
         }
         
         foreach(Collider2D e in hitEnemies){
+            e.gameObject.GetComponent<EnemyController>().ReduceHealth(dame);
             Debug.Log("we hit "+ e.name);
         }
     }
@@ -236,5 +247,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void LoadDataCharacter(){
+        maxHeath = PlayerPrefs.GetInt("MaxHealth", 1000);
+        currentHealth = PlayerPrefs.GetInt("CurrentHealth", 1000);
+        maxMana = PlayerPrefs.GetInt("MaxMana", 1000);
+        currentMana = PlayerPrefs.GetInt("CurrentMana", 1000);
+        dame = PlayerPrefs.GetInt("Dame", 10);
+    }
+
+    public int GetCurrentMana(){
+        return currentMana;
+    }
+
+    public int GetMaxMana(){
+        return maxMana;
+    }
+
+    public int GetCurrentHealth(){
+        return currentHealth;
+    }
+
+    public int GetMaxHealth(){
+        return maxHeath;
+    }
     
 }

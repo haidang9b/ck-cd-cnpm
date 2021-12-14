@@ -8,9 +8,9 @@ public class PickUpItem : MonoBehaviour
     public Item itemData;
     void OnTriggerEnter2D(Collider2D other){
         if(other.tag == "Player"){
-            Instantiate(pickUpEffect, transform.position, Quaternion.identity);
+            GameObject clone = Instantiate(pickUpEffect, transform.position, Quaternion.identity);
             Destroy(gameObject);
-            
+            Destroy(clone, 1.0f);
             GameController.instance.AddItem(itemData);
         }
     }

@@ -7,8 +7,10 @@ public class GameController : MonoBehaviour
 {
     public static GameController instance;
 
+    public GameObject player;
     public bool isPaused;
-
+    public Slider HealthSlider;
+    public Slider ManaSlider;
     public List<Item> items = new List<Item>();
     public List<int> itemNumbers = new List<int>();
     public GameObject[] slots;
@@ -61,13 +63,13 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        DisplayManaAndHealth();
     }
     public void AddItem(Item _item){
         if(items.Contains(_item) == false){
@@ -102,5 +104,12 @@ public class GameController : MonoBehaviour
         }
         DisplayItems();
         
+    }
+
+    public void DisplayManaAndHealth(){
+        ManaSlider.maxValue = player.GetComponent<PlayerController>().GetMaxMana();
+        HealthSlider.maxValue = player.GetComponent<PlayerController>().GetMaxHealth();
+        ManaSlider.value = player.GetComponent<PlayerController>().GetCurrentMana();
+        HealthSlider.value = player.GetComponent<PlayerController>().GetCurrentHealth();
     }
 }

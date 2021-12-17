@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     public GameObject MainPanel;
@@ -38,10 +39,14 @@ public class MenuController : MonoBehaviour
         }
     }
     public void ContinuteGame(){
+        LoadData();
+        SceneManager.LoadScene("Scene1");
+    }
+    private void LoadData(){
 
     }
     public void NewGame(){
-
+        SceneManager.LoadScene("Scene1");
     }
 
     public void OpenOptions(){

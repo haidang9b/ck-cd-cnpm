@@ -11,7 +11,7 @@ public class PickUpItem : MonoBehaviour
             GameObject clone = Instantiate(pickUpEffect, transform.position, Quaternion.identity);
             Destroy(gameObject);
             Destroy(clone, 1.0f);
-            GameController.instance.AddItem(itemData);
+            GameController.instance.AddItemToInventory(itemData);
         }
     }
 }

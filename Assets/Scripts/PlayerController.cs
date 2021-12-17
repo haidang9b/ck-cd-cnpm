@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+enum SKILL{
+    JUMP,
+    BLOCK,
+    ROLL,
+
+}
+
 public class PlayerController : MonoBehaviour
 {
     
@@ -43,6 +50,10 @@ public class PlayerController : MonoBehaviour
     private float rollDuration = 8.0f / 14.0f;
     private float rollCurrentTime;
 
+    private List<Skill> skills= new List<Skill>();
+    Skill skillJump = new Skill{name="Jump", description="Player can double jump"};
+    Skill skillRolling = new Skill{name="Rolling", description="Player can rolling"};
+    Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies"};
     private bool CanDoubleJump;
 
     // Use this for initialization
@@ -56,10 +67,16 @@ public class PlayerController : MonoBehaviour
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
-
+        
         LoadDataCharacter();
+        InitSkill();
     }
 
+    private void InitSkill(){
+        skills.Add(skillJump);
+        skills.Add(skillBlock);
+        skills.Add(skillRolling);
+    }
     // Update is called once per frame
     void Update ()
     {
@@ -116,8 +133,8 @@ public class PlayerController : MonoBehaviour
 
         // -- Handle Animations --
         //Wall Slide
-        isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
-        animator.SetBool("WallSlide", isWallSliding);
+        // isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
+        // animator.SetBool("WallSlide", isWallSliding);
 
         //Death
         if (Input.GetKeyDown("e") && !isRolling)
@@ -152,17 +169,17 @@ public class PlayerController : MonoBehaviour
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !isRolling)
+        else if (Input.GetMouseButtonDown(1) && !isRolling && skills.Contains(skillBlock))
         {
             animator.SetTrigger("Block");
             animator.SetBool("IdleBlock", true);
         }
 
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetMouseButtonUp(1) && skills.Contains(skillBlock))
             animator.SetBool("IdleBlock", false);
 
         // Roll
-        else if (Input.GetKeyDown("left shift") && !isRolling && !isWallSliding)
+        else if (Input.GetKeyDown("left shift") && !isRolling && !isWallSliding  && skills.Contains(skillRolling))
         {
             isRolling = true;
             animator.SetTrigger("Roll");
@@ -172,7 +189,7 @@ public class PlayerController : MonoBehaviour
             
 
         //Jump
-        else if (Input.GetKeyDown("space") && !isRolling)
+        else if (Input.GetKeyDown("space") && !isRolling  && skills.Contains(skillJump))
         {
             if(isGround){
                 Jump();
@@ -191,7 +208,7 @@ public class PlayerController : MonoBehaviour
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)
         {
             // Reset timer
-            delayToIdle = 0.05f;
+            delayToIdle = 0.03f;
             animator.SetInteger("AnimState", 1);
         }
 
@@ -201,6 +218,7 @@ public class PlayerController : MonoBehaviour
             // Prevents flickering transitions to idle
 
             delayToIdle -= Time.deltaTime;
+            
             if(delayToIdle < 0)
                 animator.SetInteger("AnimState", 0);
         }

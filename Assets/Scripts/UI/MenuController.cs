@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
     public Slider volumeSlider;
     public Toggle toggleMusic;
     public Toggle toggleEffectSound;
+    private FaderScript fader;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,7 @@ public class MenuController : MonoBehaviour
         float vol = PlayerPrefs.GetFloat("Volume");
         AudioListener.volume = vol;
 
-        bool hasMusic = PlayerPrefs.GetInt("HasMusic", 0) == 0 ? true : false;
+        bool hasMusic = PlayerPrefs.GetInt("HasMusic", 0) == 0 ? false : true;
         if(hasMusic){
             if(audioSource.isPlaying == false){
                 audioSource.Play();
@@ -37,16 +38,19 @@ public class MenuController : MonoBehaviour
                 audioSource.Pause();
             }
         }
+        Debug.Log("has music " + PlayerPrefs.GetInt("HasMusic"));
     }
     public void ContinuteGame(){
         LoadData();
-        SceneManager.LoadScene("Scene1");
+        StartCoroutine(ChangeLevel());
+        SceneManager.LoadScene("SceneGame");
     }
     private void LoadData(){
 
     }
     public void NewGame(){
-        SceneManager.LoadScene("Scene1");
+        StartCoroutine(ChangeLevel());
+        SceneManager.LoadScene("SceneGame");
     }
 
     public void OpenOptions(){
@@ -82,5 +86,10 @@ public class MenuController : MonoBehaviour
 
     public void SetToggleEffectSound(){
         PlayerPrefs.SetInt("HasEffectSound", toggleEffectSound.isOn ? 1 : 0);
+    }
+    private IEnumerator ChangeLevel(){
+        fader = GetComponent<FaderScript>();
+        float begin = fader.BeginFade(1);
+        yield return new WaitForSeconds(2f);
     }
 }

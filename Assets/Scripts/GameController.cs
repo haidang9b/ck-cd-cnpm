@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public enum EquipmentType{
     Weapon,
     Armor
@@ -22,8 +22,12 @@ public class GameController : MonoBehaviour
     public List<Item> equipmentsUsing = new List<Item>();
     public GameObject[] slots;
     public GameObject[] slotsEquipment;
+    private AudioSource audioSource;
+    private bool hasEffectSound;
+    public AudioClip pickupAudio;
     // Start is called before the first frame update
     void Awake(){
+
         if(instance == null){
             instance = this;
         }
@@ -32,7 +36,7 @@ public class GameController : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-        DontDestroyOnLoad(gameObject);
+        
     }
     private void DisplayItems(){
         for(int i = 0; i< itemsInventory.Count;i++){
@@ -71,8 +75,12 @@ public class GameController : MonoBehaviour
     }
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         player = GameObject.FindGameObjectWithTag("Player");
         InitData();
+        hasEffectSound = PlayerPrefs.GetInt("HasEffectSound", 0) == 1 ? true : false;
+        float vol = PlayerPrefs.GetFloat("Volume");
+        AudioListener.volume = vol;
     }
 
     private void InitData(){
@@ -85,6 +93,10 @@ public class GameController : MonoBehaviour
         DisplayManaAndHealth();
     }
     public void AddItemToInventory(Item _item){
+        if(hasEffectSound){
+            audioSource.clip = pickupAudio;
+            audioSource.Play();
+        }
         if(itemsInventory.Contains(_item) == false){
             itemsInventory.Add(_item);
             itemNumbers.Add(1);

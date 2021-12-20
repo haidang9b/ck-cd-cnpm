@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Random Tile\Scripts\RandomTile.cs" />
+     <Compile Include="Assets\Scripts\UI\BigMapController.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\GridInformation\Scripts\GridInformation.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Terrain Tile\Scripts\TerrainTile.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Pipeline Tile\Scripts\PipelineTile.cs" />
@@ -53,6 +54,7 @@
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Override Tile\Scripts\RuleOverrideTile.cs" />
      <Compile Include="Assets\Scripts\Item\PickUpItem.cs" />
      <Compile Include="Assets\Scripts\Item\Armor.cs" />
+     <Compile Include="Assets\Scripts\Hero\Skill.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Weighted Random Tile\WeightedRandomTile.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Tile\Scripts\RuleTile.cs" />
      <Compile Include="Assets\Scripts\Item\MP.cs" />
@@ -66,9 +68,11 @@
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\Hero\DestroyEvent_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\LoginController.cs" />
-     <Compile Include="Assets\Scripts\UI\InventoryController.cs" />
-     <Compile Include="Assets\Scripts\Hero\Skill.cs" />
      <Compile Include="Assets\Scripts\UI\EquipmentController.cs" />
+     <Compile Include="Assets\Scripts\UI\InventoryController.cs" />
+     <Compile Include="Assets\Scripts\MusicBackgroundController.cs" />
+     <Compile Include="Assets\Scripts\UI\BackMenu.cs" />
+     <Compile Include="Assets\Scripts\UI\FaderScript.cs" />
      <None Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Tile\ScriptTemplates\NewCustomRuleTile.cs.txt" />
      <None Include="Assets\TileMap Auto Rule\license.txt" />
      <None Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Brushes\Tint Brush Smooth\Shaders\TintedTilemap.shader" />

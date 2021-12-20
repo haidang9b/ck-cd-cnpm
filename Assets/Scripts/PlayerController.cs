@@ -55,12 +55,22 @@ public class PlayerController : MonoBehaviour
     Skill skillRolling = new Skill{name="Rolling", description="Player can rolling"};
     Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies"};
     private bool CanDoubleJump;
-
+    
+    // audio source
+    public AudioClip attackAudio;
+    public AudioClip jumpAudio;
+    public AudioClip rollAudio;
+    public AudioClip hurtAudio;
+    private AudioSource audioSource;
+    private bool hasEffectSound;
+    
+    
     // Use this for initialization
     void Start ()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
         // các cảm biến về tường, cảm biến về chạm mặt đất
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
         m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<Sensor_HeroKnight>();
@@ -70,8 +80,24 @@ public class PlayerController : MonoBehaviour
         
         LoadDataCharacter();
         InitSkill();
+
+        LoadAudio();
     }
 
+    private void LoadAudio(){
+        bool hasMusic = PlayerPrefs.GetInt("HasMusic", 0) == 0 ? false : true;
+        hasEffectSound = PlayerPrefs.GetInt("HasEffectSound", 0) == 0 ? false : true;
+        if(hasMusic){
+            if(audioSource.isPlaying == false){
+                audioSource.Play();
+            }
+        }
+        else{
+            if(audioSource.isPlaying){
+                audioSource.Pause();
+            }
+        }
+    }
     private void InitSkill(){
         skills.Add(skillJump);
         skills.Add(skillBlock);
@@ -139,6 +165,10 @@ public class PlayerController : MonoBehaviour
         //Death
         if (Input.GetKeyDown("e") && !isRolling)
         {
+            if(hasEffectSound){
+                audioSource.clip = hurtAudio;
+                audioSource.Play();
+            }
             animator.SetBool("noBlood", noBlood);
             animator.SetTrigger("Death");
         }
@@ -152,7 +182,10 @@ public class PlayerController : MonoBehaviour
         {
             Attack();
             currentAttack++;
-
+            if(hasEffectSound){
+                audioSource.clip = attackAudio;
+                audioSource.Play();
+            }
             // Loop back to one after third attack
             if (currentAttack > 3)
                 currentAttack = 1;
@@ -181,6 +214,11 @@ public class PlayerController : MonoBehaviour
         // Roll
         else if (Input.GetKeyDown("left shift") && !isRolling && !isWallSliding  && skills.Contains(skillRolling))
         {
+            if(hasEffectSound){
+                audioSource.clip = rollAudio;
+                audioSource.Play();
+            }
+            
             isRolling = true;
             animator.SetTrigger("Roll");
             
@@ -191,7 +229,8 @@ public class PlayerController : MonoBehaviour
         //Jump
         else if (Input.GetKeyDown("space") && !isRolling  && skills.Contains(skillJump))
         {
-            if(isGround){
+            
+            if(isGround){         
                 Jump();
                 CanDoubleJump = true;
             }
@@ -239,6 +278,11 @@ public class PlayerController : MonoBehaviour
     }
 
     void Jump(){
+        if(hasEffectSound){
+            audioSource.clip = jumpAudio;
+            audioSource.Play();     
+        }
+        
         animator.SetTrigger("Jump");
         isGround = false;
         animator.SetBool("Grounded", isGround);

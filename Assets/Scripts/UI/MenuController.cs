@@ -92,4 +92,9 @@ public class MenuController : MonoBehaviour
         float begin = fader.BeginFade(1);
         yield return new WaitForSeconds(2f);
     }
+    public void Logout(){
+        // clear data
+        StartCoroutine(ChangeLevel());
+        SceneManager.LoadScene("Login");
+    }
 }

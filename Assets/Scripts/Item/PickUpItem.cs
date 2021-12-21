@@ -8,10 +8,16 @@ public class PickUpItem : MonoBehaviour
     public Item itemData;
     void OnTriggerEnter2D(Collider2D other){
         if(other.tag == "Player"){
-            GameObject clone = Instantiate(pickUpEffect, transform.position, Quaternion.identity);
-            Destroy(gameObject);
-            Destroy(clone, 1.0f);
-            GameController.instance.AddItemToInventory(itemData);
+            if(GameController.instance.itemsInventory.Count < GameController.instance.slots.Length){
+                 GameObject clone = Instantiate(pickUpEffect, transform.position, Quaternion.identity);
+                Destroy(gameObject);
+                Destroy(clone, 1.0f);
+                GameController.instance.AddItemToInventory(itemData);
+            }
+            else{
+                Debug.Log("Kh the add item, inventory is full");
+            }
+           
         }
     }
 }

@@ -17,3 +17,4 @@ MonoBehaviour:
   itemSpite: {fileID: 21300000, guid: 9ffcd8110ea080d48b020a12605fba0b, type: 3}
   price: 0
   defense: 50
+  HP: 500

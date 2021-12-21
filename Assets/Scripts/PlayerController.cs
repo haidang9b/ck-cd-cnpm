@@ -7,7 +7,9 @@ enum SKILL{
     JUMP,
     BLOCK,
     ROLL,
-
+    ATTACK1,
+    ATTACK2,
+    ATTACK3
 }
 
 public class PlayerController : MonoBehaviour
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
     public int maxMana;
     public int currentMana;
     public int dame;
+    public int defense;
 
     // end rate character
     public LayerMask enemyLayers;
@@ -48,12 +51,15 @@ public class PlayerController : MonoBehaviour
     private float timeSinceAttack = 0.0f;
     private float delayToIdle = 0.0f;
     private float rollDuration = 8.0f / 14.0f;
-    private float rollCurrentTime;
+    private float rollCurrentTime; 
 
     private List<Skill> skills= new List<Skill>();
     Skill skillJump = new Skill{name="Jump", description="Player can double jump"};
     Skill skillRolling = new Skill{name="Rolling", description="Player can rolling"};
     Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies"};
+    Skill skillAttack1 = new Skill{name="Attack 1", description="Player can attack 1"};
+    Skill skillAttack2 = new Skill{name="Attack 2", description="Player can attack 2"};
+    Skill skillAttack3 = new Skill{name="Attack 3", description="Player can attack 3"};
     private bool CanDoubleJump;
     
     // audio source
@@ -63,6 +69,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip hurtAudio;
     private AudioSource audioSource;
     private bool hasEffectSound;
+    
     
     
     // Use this for initialization
@@ -102,6 +109,9 @@ public class PlayerController : MonoBehaviour
         skills.Add(skillJump);
         skills.Add(skillBlock);
         skills.Add(skillRolling);
+        skills.Add(skillAttack1);
+        skills.Add(skillAttack2);
+        skills.Add(skillAttack3);
     }
     // Update is called once per frame
     void Update ()
@@ -179,26 +189,70 @@ public class PlayerController : MonoBehaviour
 
         //Attack
         else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling)
-        {
-            Attack();
-            currentAttack++;
-            if(hasEffectSound){
-                audioSource.clip = attackAudio;
-                audioSource.Play();
+        {   
+            if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2) && skills.Contains(skillAttack3)){
+                Attack();
+                currentAttack++;
+                if(hasEffectSound){
+                    audioSource.clip = attackAudio;
+                    audioSource.Play();
+                }
+                // Loop back to one after third attack
+                if (currentAttack > 3)
+                    currentAttack = 1;
+
+                // Reset Attack combo if time since last attack is too large
+                if (timeSinceAttack > 1.0f)
+                    currentAttack = 1;
+
+                // Call one of three attack animations "Attack1", "Attack2", "Attack3"
+                animator.SetTrigger("Attack" + currentAttack);
+                
+                // Reset timer
+                timeSinceAttack = 0.0f;
             }
-            // Loop back to one after third attack
-            if (currentAttack > 3)
-                currentAttack = 1;
+            else if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2)){
+                Attack();
+                currentAttack++;
+                if(hasEffectSound){
+                    audioSource.clip = attackAudio;
+                    audioSource.Play();
+                }
+                // Loop back to one after third attack
+                if (currentAttack > 2)
+                    currentAttack = 1;
 
-            // Reset Attack combo if time since last attack is too large
-            if (timeSinceAttack > 1.0f)
-                currentAttack = 1;
+                // Reset Attack combo if time since last attack is too large
+                if (timeSinceAttack > 1.0f)
+                    currentAttack = 1;
 
-            // Call one of three attack animations "Attack1", "Attack2", "Attack3"
-            animator.SetTrigger("Attack" + currentAttack);
-            
-            // Reset timer
-            timeSinceAttack = 0.0f;
+                // Call one of two attack animations "Attack1", "Attack2"
+                animator.SetTrigger("Attack" + currentAttack);
+                
+                // Reset timer
+                timeSinceAttack = 0.0f;
+            }
+            else if(skills.Contains(skillAttack1)){
+                Attack();
+                currentAttack++;
+                if(hasEffectSound){
+                    audioSource.clip = attackAudio;
+                    audioSource.Play();
+                }
+                // Loop back to one after third attack
+                if (currentAttack > 1)
+                    currentAttack = 1;
+
+                // Reset Attack combo if time since last attack is too large
+                if (timeSinceAttack > 1.0f)
+                    currentAttack = 1;
+
+                // Call one of three attack animations "Attack1"
+                animator.SetTrigger("Attack" + currentAttack);
+                
+                // Reset timer
+                timeSinceAttack = 0.0f;
+            }
         }
 
         // Block
@@ -315,6 +369,14 @@ public class PlayerController : MonoBehaviour
         maxMana = PlayerPrefs.GetInt("MaxMana", 1000);
         currentMana = PlayerPrefs.GetInt("CurrentMana", 1000);
         dame = PlayerPrefs.GetInt("Dame", 10);
+        defense = PlayerPrefs.GetInt("Defense",10);
+    }
+
+    public int GetDame(){
+        return dame;
+    }
+    public int GetDefense(){
+        return defense;
     }
 
     public int GetCurrentMana(){
@@ -333,4 +395,7 @@ public class PlayerController : MonoBehaviour
         return maxHeath;
     }
     
+    public List<Skill> GetSkillsPlayer(){
+        return this.skills;
+    }
 }

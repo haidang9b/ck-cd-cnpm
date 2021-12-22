@@ -326,8 +326,8 @@ public class PlayerController : MonoBehaviour
         }
         
         foreach(Collider2D e in hitEnemies){
-            e.gameObject.GetComponent<EnemyController>().ReduceHealth(dame);
-            Debug.Log("we hit "+ e.name);
+            e.gameObject.GetComponent<EnemyController>().ReduceHealth(GetDame());
+            Debug.Log("we hit "+ e.name + " dame " +GetDame());
         }
     }
 
@@ -373,10 +373,12 @@ public class PlayerController : MonoBehaviour
     }
 
     public int GetDame(){
-        return dame;
+        int dameCurrentWeapon = GameController.instance.GetCurrentWeapon() == null ? 0 : GameController.instance.GetCurrentWeapon().dame;
+        return dame + dameCurrentWeapon;
     }
     public int GetDefense(){
-        return defense;
+        int currentDefense = GameController.instance.GetCurrentArmor() == null ? 0 : GameController.instance.GetCurrentArmor().defense;
+        return defense + currentDefense;
     }
 
     public int GetCurrentMana(){
@@ -392,7 +394,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public int GetMaxHealth(){
-        return maxHeath;
+        int currentHealthArmor = GameController.instance.GetCurrentArmor() == null ? 0 : GameController.instance.GetCurrentArmor().HP;
+        return maxHeath + currentHealthArmor;
     }
     
     public List<Skill> GetSkillsPlayer(){

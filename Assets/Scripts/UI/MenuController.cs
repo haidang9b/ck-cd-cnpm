@@ -50,7 +50,7 @@ public class MenuController : MonoBehaviour
     }
     public void NewGame(){
         StartCoroutine(ChangeLevel());
-        SceneManager.LoadScene("SceneGame");
+        SceneManager.LoadScene("CutScene");
     }
 
     public void OpenOptions(){

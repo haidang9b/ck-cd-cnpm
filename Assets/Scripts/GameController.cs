@@ -19,12 +19,14 @@ public class GameController : MonoBehaviour
     public List<Item> itemsInventory = new List<Item>();
     public List<int> itemNumbers = new List<int>();
 
-    public List<Item> equipmentsUsing = new List<Item>();
+    public List<Item> equipments = new List<Item>();
     public GameObject[] slots;
     public GameObject[] slotsEquipment;
     private AudioSource audioSource;
     private bool hasEffectSound;
     public AudioClip pickupAudio;
+    private Item weaponCurrent = null;
+    private Item armorCurrent = null;
     // Start is called before the first frame update
     void Awake(){
 
@@ -84,7 +86,62 @@ public class GameController : MonoBehaviour
     }
 
     private void InitData(){
+      
+    }
 
+    public void AddItemToEquipment(Item item){
+        if(item.GetType().ToString() == "Weapon"){
+            if(weaponCurrent == null){
+                weaponCurrent = item;
+            }
+            else{
+                AddItemToInventory(weaponCurrent);
+                weaponCurrent = item;
+            }
+        }
+        if(item.GetType().ToString() == "Armor"){
+            if(armorCurrent == null){
+                armorCurrent = item;
+
+            }
+            else{
+                AddItemToInventory(armorCurrent);
+                armorCurrent = item;
+            }
+        }
+        DisplayItemsEquipment();
+    }
+    private void DisplayItemsEquipment(){
+        if(weaponCurrent == null){
+            slotsEquipment[0].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,0.4f);
+
+            slotsEquipment[0].transform.GetChild(2).GetComponent<Image>().color = new Color(1,1,1,0);
+            slotsEquipment[0].transform.GetChild(2).GetComponent<Image>().sprite = null;
+            slotsEquipment[0].transform.GetChild(2).gameObject.SetActive(false);
+        }
+        else{
+            slotsEquipment[0].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,0);
+
+            slotsEquipment[0].transform.GetChild(2).GetComponent<Image>().color = new Color(1,1,1,1);
+            slotsEquipment[0].transform.GetChild(2).GetComponent<Image>().sprite = weaponCurrent.itemSpite;
+            slotsEquipment[0].transform.GetChild(2).gameObject.SetActive(true);
+        }
+
+        if(armorCurrent == null){
+            slotsEquipment[1].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,0.4f);
+
+            slotsEquipment[1].transform.GetChild(2).GetComponent<Image>().color = new Color(1,1,1,0);
+            slotsEquipment[1].transform.GetChild(2).GetComponent<Image>().sprite = null;
+            slotsEquipment[1].transform.GetChild(2).gameObject.SetActive(false);
+        }
+        else{
+            slotsEquipment[1].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,0);
+
+            slotsEquipment[1].transform.GetChild(2).GetComponent<Image>().color = new Color(1,1,1,1);
+            slotsEquipment[1].transform.GetChild(2).GetComponent<Image>().sprite = armorCurrent.itemSpite; 
+            slotsEquipment[1].transform.GetChild(2).gameObject.SetActive(true);
+        }
+        
     }
 
     // Update is called once per frame
@@ -141,31 +198,24 @@ public class GameController : MonoBehaviour
     // 0 = weapon, 1 = armor
     public void setEquipment(int index, Item data) {
         if( index >=0 && index <2){
-            equipmentsUsing[index] = data;
+            equipments[index] = data;
         }
     }
+    
+    public Weapon GetCurrentWeapon() {
+        return (Weapon)weaponCurrent;
+    }
 
-    // public void DisplayEquipment(){
-    //     for(int i = 0 ; i< slotsEquipment.Length; i++){
-    //         if(equipmentsUsing[i] != null){
-    //             // set suggest active = false
-    //             slotsEquipment[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,0);
-    //             slotsEquipment[i].transform.GetChild(1).gameObject.SetActive(false);
+    public Armor GetCurrentArmor() {
+        return (Armor)armorCurrent;
+    }
 
-    //             // show image equipment
-    //             slotsEquipment[i].transform.GetChild(2).GetComponent<Image>().color = new Color(1,1,1,1);
-    //             slotsEquipment[i].transform.GetChild(2).GetComponent<Image>().sprite = equipmentsUsing[i].itemSpite;
-    //             slotsEquipment[i].transform.GetChild(2).gameObject.SetActive(true);
-    //         }
-    //         else{
-    //             slotsEquipment[i].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,1);
-    //             slotsEquipment[i].transform.GetChild(1).gameObject.SetActive(true);
-
-    //             slotsEquipment[i].transform.GetChild(2).GetComponent<Image>().color = new Color(1,1,1,0);
-    //             slotsEquipment[i].transform.GetChild(2).GetComponent<Image>().sprite = null;
-    //             slotsEquipment[i].transform.GetChild(2).gameObject.SetActive(false);
-    //         }
-            
-    //     }
-    // }
+    public void RemoveArmor(){
+        armorCurrent = null;
+        DisplayItemsEquipment();
+    }
+    public void RemoveWeapon(){
+        weaponCurrent = null;
+        DisplayItemsEquipment();
+    }
 }

@@ -44,6 +44,7 @@
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\Item\Item.cs" />
      <Compile Include="Assets\Scripts\UI\Destroyer.cs" />
+     <Compile Include="Assets\Scripts\CutScene.cs" />
      <Compile Include="Assets\Scripts\Hero\Sensor_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\UI\MenuController.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyController.cs" />
@@ -52,16 +53,18 @@
      <Compile Include="Assets\Scripts\UI\CameraController.cs" />
      <Compile Include="Assets\Scripts\UI\ItemInventoryBehaviour.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Override Tile\Scripts\RuleOverrideTile.cs" />
+     <Compile Include="Assets\Scripts\UI\Tooltips.cs" />
      <Compile Include="Assets\Scripts\Item\PickUpItem.cs" />
      <Compile Include="Assets\Scripts\Item\Armor.cs" />
      <Compile Include="Assets\Scripts\Hero\Skill.cs" />
+     <Compile Include="Assets\Scripts\UI\ItemEquipmentBehavior.cs" />
+     <Compile Include="Assets\Scripts\UI\InfoController.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Weighted Random Tile\WeightedRandomTile.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Tile\Scripts\RuleTile.cs" />
      <Compile Include="Assets\Scripts\Item\MP.cs" />
      <Compile Include="Assets\Scripts\Item\HP.cs" />
      <Compile Include="Assets\Scripts\Hero\HeroKnight.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
-     <Compile Include="Assets\TileMap Auto Rule\Scripts\TerrainAutoRuleTile.cs" />
      <Compile Include="Assets\Scripts\DBManager.cs" />
      <Compile Include="Assets\Scripts\Enemy\TestEnemy.cs" />
      <Compile Include="Assets\Scripts\UI\BackMenu.cs" />
@@ -73,8 +76,6 @@
      <Compile Include="Assets\Scripts\UI\EquipmentController.cs" />
      <Compile Include="Assets\Scripts\MusicBackgroundController.cs" />
      <Compile Include="Assets\Scripts\UI\InventoryController.cs" />
-     <Compile Include="Assets\Scripts\UI\InfoController.cs" />
-     <Compile Include="Assets\Scripts\UI\Tooltips.cs" />
      <None Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Tile\ScriptTemplates\NewCustomRuleTile.cs.txt" />
      <None Include="Assets\TileMap Auto Rule\license.txt" />
      <None Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Brushes\Tint Brush Smooth\Shaders\TintedTilemap.shader" />

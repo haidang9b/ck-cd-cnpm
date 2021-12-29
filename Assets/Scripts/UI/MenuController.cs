@@ -40,14 +40,19 @@ public class MenuController : MonoBehaviour
         }
         Debug.Log("has music " + PlayerPrefs.GetInt("HasMusic"));
     }
+
+    // load data nếu chơi game cũ
     public void ContinuteGame(){
         LoadData();
         StartCoroutine(ChangeLevel());
         SceneManager.LoadScene("SceneGame");
     }
+    
+    // xử lý load data game cũ player đã chơi
     private void LoadData(){
 
     }
+    // start game mới
     public void NewGame(){
         StartCoroutine(ChangeLevel());
         SceneManager.LoadScene("CutScene");
@@ -63,6 +68,7 @@ public class MenuController : MonoBehaviour
         OptionPanel.SetActive(false);
     }
 
+    // load âm thanh, hiệu ứng
     void LoadVolume(){
         float vol = PlayerPrefs.GetFloat("Volume");
         volumeSlider.value = vol;

@@ -78,9 +78,11 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
             tooltip.UpdateTooltip("");
         }
     }
-
+    
+    // xử lý click item
     public void OnPointerClick(PointerEventData eventData)
     {
+        // kiểm tra chuột trái click 2 lần
         if(eventData.button == PointerEventData.InputButton.Left  && eventData.clickCount == 2){
             GetThisItem();
             if(thisItem != null){

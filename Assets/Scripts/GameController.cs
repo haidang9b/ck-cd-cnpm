@@ -10,20 +10,28 @@ public enum EquipmentType{
 
 public class GameController : MonoBehaviour
 {
+    // áp dụng singleton để thao tác khi gọi tới object này
     public static GameController instance;
 
     public GameObject player;
     public bool isPaused;
+    // thanh máu + mana
     public Slider HealthSlider;
     public Slider ManaSlider;
+
+    // dnah sách các item có trong túi đồ + số lượng đi kèm của nó
     public List<Item> itemsInventory = new List<Item>();
     public List<int> itemNumbers = new List<int>();
 
+    // có 2 thứ: giáp + vũ khí, mang vào sẽ + dame và giáp
     public List<Item> equipments = new List<Item>();
+    // slot ô chứa đồ
     public GameObject[] slots;
+    // slot các item giáp và vũ khí đang mang
     public GameObject[] slotsEquipment;
     private AudioSource audioSource;
     private bool hasEffectSound;
+    // âm thanh nhặt đồ
     public AudioClip pickupAudio;
     private Item weaponCurrent = null;
     private Item armorCurrent = null;
@@ -40,6 +48,8 @@ public class GameController : MonoBehaviour
         }
         
     }
+
+    // hiển thị item trong inventory
     private void DisplayItems(){
         for(int i = 0; i< itemsInventory.Count;i++){
             slots[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1,1,1,1);
@@ -81,14 +91,16 @@ public class GameController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         InitData();
         hasEffectSound = PlayerPrefs.GetInt("HasEffectSound", 0) == 1 ? true : false;
+        // cần check sound + effect
         float vol = PlayerPrefs.GetFloat("Volume");
         AudioListener.volume = vol;
     }
 
     private void InitData(){
-      
+    //   load data khi đầu game vào
     }
 
+    //  gắn giáp + vũ khí cho nhân vật
     public void AddItemToEquipment(Item item){
         if(item.GetType().ToString() == "Weapon"){
             if(weaponCurrent == null){
@@ -111,6 +123,8 @@ public class GameController : MonoBehaviour
         }
         DisplayItemsEquipment();
     }
+
+    //  hiển thị các equipments
     private void DisplayItemsEquipment(){
         if(weaponCurrent == null){
             slotsEquipment[0].transform.GetChild(1).GetComponent<Image>().color = new Color(1,1,1,0.4f);
@@ -149,6 +163,8 @@ public class GameController : MonoBehaviour
     {
         DisplayManaAndHealth();
     }
+
+    // xử lý thêm item khi nhặt đồ
     public void AddItemToInventory(Item _item){
         if(hasEffectSound){
             audioSource.clip = pickupAudio;
@@ -168,6 +184,7 @@ public class GameController : MonoBehaviour
         DisplayItems();
     }
 
+    // remove item khỏi inventory
     public void RemoveItemInInventory(Item _item) {
         if(itemsInventory.Contains(_item)){
             for(int i = 0; i< itemsInventory.Count; i++){
@@ -188,6 +205,7 @@ public class GameController : MonoBehaviour
         
     }
 
+    //  hiển thị chính xác các slider máu + mana
     public void DisplayManaAndHealth(){
         ManaSlider.maxValue = player.GetComponent<PlayerController>().GetMaxMana();
         HealthSlider.maxValue = player.GetComponent<PlayerController>().GetMaxHealth();
@@ -201,7 +219,7 @@ public class GameController : MonoBehaviour
             equipments[index] = data;
         }
     }
-    
+    // get data vũ khí và giáp
     public Weapon GetCurrentWeapon() {
         return (Weapon)weaponCurrent;
     }

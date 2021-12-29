@@ -17,6 +17,7 @@ public class Tooltips : MonoBehaviour
     {
         
     }
+    //  hiển thị, ẩn, set data, position panel tooltip
     public void ShowTooltip(){
         gameObject.SetActive(true);
     }

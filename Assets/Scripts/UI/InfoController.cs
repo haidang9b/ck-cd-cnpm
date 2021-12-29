@@ -37,13 +37,14 @@ public class InfoController : MonoBehaviour
             }
         }
     }
-
-    private void Resume(){
+    // đóng panel
+    public void Resume(){
         infomationPanel.SetActive(false);
         toolPanel.SetActive(true);
         Time.timeScale = 1.0f;
         GameController.instance.isPaused = false;
     }
+    // mở panel
     public void Pause(){
         infomationPanel.SetActive(true);
         toolPanel.SetActive(false);

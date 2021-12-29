@@ -14,7 +14,7 @@ enum SKILL{
 
 public class PlayerController : MonoBehaviour
 {
-    
+    //  áp dụng các lực : tốc độ, nhày, lăn
     [SerializeField] float speed = 4.0f;
     [SerializeField] float jumpForce = 7.5f;
     [SerializeField] float rollForce = 6.0f;
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public Transform attackPointLeft;
     public float attackRange = 0.5f;
 
-    // rate of character
+    // rate of character: tỉ lệ máu, mana
     public int maxHeath;
     public int currentHealth;
     public int maxMana;
@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
     private Rigidbody2D rb;
+    // các cảm biến khi chạm
     private Sensor_HeroKnight m_groundSensor;
     private Sensor_HeroKnight m_wallSensorR1;
     private Sensor_HeroKnight m_wallSensorR2;
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
     private float rollCurrentTime; 
 
     private List<Skill> skills= new List<Skill>();
+    //  các skill của player 
     Skill skillJump = new Skill{name="Jump", description="Player can double jump"};
     Skill skillRolling = new Skill{name="Rolling", description="Player can rolling"};
     Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies"};
@@ -290,9 +292,7 @@ public class PlayerController : MonoBehaviour
             }
             else if(CanDoubleJump ){
                 Debug.Log("Nhảy lần 2");
-                // jumpForce = jumpForce / 1.5f;
                 Jump();
-                // jumpForce = jumpForce * 1.5f;
                 CanDoubleJump = false;
             }
         }
@@ -317,6 +317,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // xử lý tấn công
     void Attack(){
         Collider2D[] hitEnemies;
         if(facingDirection > 0){
@@ -330,7 +331,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("we hit "+ e.name + " dame " +GetDame());
         }
     }
-
+    // xử lý nhảy
     void Jump(){
         if(hasEffectSound){
             audioSource.clip = jumpAudio;
@@ -363,6 +364,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // load data cho character
     private void LoadDataCharacter(){
         maxHeath = PlayerPrefs.GetInt("MaxHealth", 1000);
         currentHealth = PlayerPrefs.GetInt("CurrentHealth", 1000);
@@ -372,6 +374,8 @@ public class PlayerController : MonoBehaviour
         defense = PlayerPrefs.GetInt("Defense",10);
     }
 
+
+    //  xử lý các chỉ số cơ bản
     public int GetDame(){
         int dameCurrentWeapon = GameController.instance.GetCurrentWeapon() == null ? 0 : GameController.instance.GetCurrentWeapon().dame;
         return dame + dameCurrentWeapon;

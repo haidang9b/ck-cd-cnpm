@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b560f58507ff04e83d7e05cfbff906, type: 3}
+  m_Name: kiem1
+  m_EditorClassIdentifier: 
+  itemName: Sword lv1
+  itemDescription: Sword lv1 +10 attack dame
+  itemSpite: {fileID: 21300000, guid: 65f9fc6415d71c143b354019dc32835b, type: 3}
+  price: 5
+  dame: 10

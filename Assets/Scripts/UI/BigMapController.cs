@@ -28,7 +28,7 @@ public class BigMapController : MonoBehaviour
         }
     }
 
-    private void Resume() {
+    public void Resume() {
         cameraBigMap.gameObject.SetActive(false);
         toolPanel.gameObject.SetActive(true);
         Time.timeScale = 1.0f;

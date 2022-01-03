@@ -10,9 +10,6 @@ public class ItemEquipmentBehavior : MonoBehaviour , IPointerEnterHandler, IPoin
     public int equipmentID;
     public Tooltips tooltip;
     Vector2 positionDisplay;
-    int clicked = 0;
-    float clicktime = 0;
-    float clickdelay = 0.5f;
 
     private void GetThisItemEquipment(){
         // weapon
@@ -41,20 +38,20 @@ public class ItemEquipmentBehavior : MonoBehaviour , IPointerEnterHandler, IPoin
         }
         else{
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("<color=black><size=36><b>Name:</b></size></color> <color=orange><size=36><b>{0}</b></size></color>\n", _item.itemName);
+            stringBuilder.AppendFormat("<color=black><size=26><b>Name:</b></size></color> <color=orange><size=26><b>{0}</b></size></color>\n", _item.itemName);
 
             if(_item.GetType().ToString() == "Weapon"){
                 Weapon weapon = (Weapon)_item;
-                stringBuilder.AppendFormat("<color=black><size=36><b>Dame:</b></size></color> <color=red><size=36><b>{0}</b></size></color>\n", weapon.dame);
+                stringBuilder.AppendFormat("<color=black><size=26><b>Dame:</b></size></color> <color=red><size=26><b>{0}</b></size></color>\n", weapon.dame);
             }
             else if(_item.GetType().ToString() == "Armor"){
                 Armor armor = (Armor)_item;
-                stringBuilder.AppendFormat("<color=black><size=36><b>HP:</b></size></color> <color=red><size=36><b>{0}</b></size></color>\n", armor.HP);
-                stringBuilder.AppendFormat("<color=black><size=36><b>Defense:</b></size></color> <color=gray><size=36><b>{0}</b></size></color>\n", armor.HP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>HP:</b></size></color> <color=red><size=26><b>{0}</b></size></color>\n", armor.HP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>Defense:</b></size></color> <color=gray><size=26><b>{0}</b></size></color>\n", armor.HP);
             }
             
-            stringBuilder.AppendFormat("<color=black><size=36><b>Sell Price:</b></size></color> <color=yellow><size=36><b>{0}</b></size></color>\n", _item.price);
-            stringBuilder.AppendFormat("<color=black><size=36><b>Description:</b></size></color> <color=gray><size=36><b>{0}</b></size></color>\n", _item.itemDescription);
+            stringBuilder.AppendFormat("<color=black><size=26><b>Sell Price:</b></size></color> <color=yellow><size=26><b>{0}</b></size></color>\n", _item.price);
+            stringBuilder.AppendFormat("<color=black><size=26><b>Description:</b></size></color> <color=gray><size=26><b>{0}</b></size></color>\n", _item.itemDescription);
             return stringBuilder.ToString();
         }
     }

@@ -3,15 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum SKILL{
-    JUMP,
-    BLOCK,
-    ROLL,
-    ATTACK1,
-    ATTACK2,
-    ATTACK3
-}
-
 public class PlayerController : MonoBehaviour
 {
     //  áp dụng các lực : tốc độ, nhày, lăn
@@ -26,7 +17,8 @@ public class PlayerController : MonoBehaviour
     public float attackRange = 0.5f;
 
     // rate of character: tỉ lệ máu, mana
-    public int maxHeath;
+    public int idLevelCurrent;
+    public int maxHealth;
     public int currentHealth;
     public int maxMana;
     public int currentMana;
@@ -34,6 +26,8 @@ public class PlayerController : MonoBehaviour
     public int defense;
 
     // end rate character
+
+    public LayerMask interactableLayers;
     public LayerMask enemyLayers;
 
     private Animator animator;
@@ -56,12 +50,12 @@ public class PlayerController : MonoBehaviour
 
     private List<Skill> skills= new List<Skill>();
     //  các skill của player 
-    Skill skillJump = new Skill{name="Jump", description="Player can double jump"};
-    Skill skillRolling = new Skill{name="Rolling", description="Player can rolling"};
-    Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies"};
-    Skill skillAttack1 = new Skill{name="Attack 1", description="Player can attack 1"};
-    Skill skillAttack2 = new Skill{name="Attack 2", description="Player can attack 2"};
-    Skill skillAttack3 = new Skill{name="Attack 3", description="Player can attack 3"};
+    Skill skillJump = new Skill{name="Jump", description="Player can double jump", mana=10};
+    Skill skillRolling = new Skill{name="Rolling", description="Player can rolling", mana=15};
+    Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies", mana=20};
+    Skill skillAttack1 = new Skill{name="Attack 1", description="Player can attack 1", mana=20};
+    Skill skillAttack2 = new Skill{name="Attack 2", description="Player can attack 2", mana=20};
+    Skill skillAttack3 = new Skill{name="Attack 3", description="Player can attack 3", mana=20};
     private bool CanDoubleJump;
     
     // audio source
@@ -72,11 +66,29 @@ public class PlayerController : MonoBehaviour
     private AudioSource audioSource;
     private bool hasEffectSound;
     
-    
+    // load levels
+    List<Level> levels;
+
+    private int coins;
+    // private static PlayerController instance = null;
+    // public static PlayerController Instance{
+    //     get{
+    //         if(instance == null){
+    //             instance = new PlayerController();
+    //         }
+    //         return instance;
+    //     }
+    //     private set{
+    //         instance = value;
+    //     }
+    // }
     
     // Use this for initialization
     void Start ()
     {
+        
+        PlayerPrefs.DeleteAll();
+        idLevelCurrent = PlayerPrefs.GetInt("idLevel",1);
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
@@ -86,11 +98,21 @@ public class PlayerController : MonoBehaviour
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
-        
+        levels = new List<Level>();
+        InitDataLevel();
         LoadDataCharacter();
         InitSkill();
 
         LoadAudio();
+    }
+
+    private void InitDataLevel(){
+        levels.Add(new Level{idLevel =1, dameAttack = 10, defense = 10, maxMana = 1000, maxHealth = 1000, cost =100});
+        levels.Add(new Level{idLevel =2, dameAttack = 15, defense = 20, maxMana = 2000, maxHealth = 2000, cost =200});
+        levels.Add(new Level{idLevel =3, dameAttack = 20, defense = 30, maxMana = 3000, maxHealth = 3000, cost =300});
+        levels.Add(new Level{idLevel =4, dameAttack = 25, defense = 40, maxMana = 4000, maxHealth = 4000, cost =400});
+        levels.Add(new Level{idLevel =5, dameAttack = 30, defense = 50, maxMana = 5000, maxHealth = 5000, cost =500});
+        levels.Add(new Level{idLevel =6, dameAttack = 35, defense = 60, maxMana = 6000, maxHealth = 6000, cost =600});
     }
 
     private void LoadAudio(){
@@ -190,7 +212,7 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Hurt");
 
         //Attack
-        else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling)
+        else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling && currentMana > skillAttack1.mana)
         {   
             if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2) && skills.Contains(skillAttack3)){
                 Attack();
@@ -258,8 +280,9 @@ public class PlayerController : MonoBehaviour
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !isRolling && skills.Contains(skillBlock))
+        else if (Input.GetMouseButtonDown(1) && !isRolling && skills.Contains(skillBlock) && currentMana >= skillBlock.mana)
         {
+            reduceMana(skillBlock);
             animator.SetTrigger("Block");
             animator.SetBool("IdleBlock", true);
         }
@@ -268,8 +291,9 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("IdleBlock", false);
 
         // Roll
-        else if (Input.GetKeyDown("left shift") && !isRolling && !isWallSliding  && skills.Contains(skillRolling))
+        else if (Input.GetKeyDown("left shift") && !isRolling && !isWallSliding  && skills.Contains(skillRolling)  && currentMana >= skillRolling.mana )
         {
+            reduceMana(skillRolling);
             if(hasEffectSound){
                 audioSource.clip = rollAudio;
                 audioSource.Play();
@@ -281,9 +305,9 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(facingDirection * rollForce, rb.velocity.y);
         }
             
-
+        // dame enemy = dame enemy - defense player 
         //Jump
-        else if (Input.GetKeyDown("space") && !isRolling  && skills.Contains(skillJump))
+        else if (Input.GetKeyDown("space") && !isRolling  && skills.Contains(skillJump) &&  currentMana >= skillJump.mana )
         {
             
             if(isGround){         
@@ -291,7 +315,7 @@ public class PlayerController : MonoBehaviour
                 CanDoubleJump = true;
             }
             else if(CanDoubleJump ){
-                Debug.Log("Nhảy lần 2");
+                // Debug.Log("Nhảy lần 2");
                 Jump();
                 CanDoubleJump = false;
             }
@@ -315,10 +339,32 @@ public class PlayerController : MonoBehaviour
             if(delayToIdle < 0)
                 animator.SetInteger("AnimState", 0);
         }
+
+        if(Input.GetKeyDown(KeyCode.Z)){
+            InteractNPC();
+        }
+    }
+
+    // xử lý giao tiếp vs npc
+    void InteractNPC(){
+        
+        if(facingDirection > 0){
+            var collider = Physics2D.OverlapCircle(attackPointRight.position, 0.3f, interactableLayers);
+            if(collider != null){
+                collider.GetComponent<Interactable>()?.Interact();
+            }
+        }
+        else{
+            var collider = Physics2D.OverlapCircle(attackPointLeft.position, 0.3f, interactableLayers);
+            if(collider != null){
+                collider.GetComponent<Interactable>()?.Interact();
+            }
+        }
     }
 
     // xử lý tấn công
     void Attack(){
+        reduceMana(skillAttack1); // bởi vì mana như nhau nên trừ bầng một cái
         Collider2D[] hitEnemies;
         if(facingDirection > 0){
             hitEnemies = Physics2D.OverlapCircleAll(attackPointRight.position, attackRange, enemyLayers);
@@ -333,6 +379,7 @@ public class PlayerController : MonoBehaviour
     }
     // xử lý nhảy
     void Jump(){
+        reduceMana(skillJump);
         if(hasEffectSound){
             audioSource.clip = jumpAudio;
             audioSource.Play();     
@@ -366,13 +413,17 @@ public class PlayerController : MonoBehaviour
 
     // load data cho character
     private void LoadDataCharacter(){
-        maxHeath = PlayerPrefs.GetInt("MaxHealth", 1000);
+        
+        Level thisLevel = getCurrentLevel();
+        coins = PlayerPrefs.GetInt("coins", 100000);   
+        maxHealth = thisLevel.maxHealth;
         currentHealth = PlayerPrefs.GetInt("CurrentHealth", 1000);
-        maxMana = PlayerPrefs.GetInt("MaxMana", 1000);
+        maxMana = thisLevel.maxMana;
         currentMana = PlayerPrefs.GetInt("CurrentMana", 1000);
-        dame = PlayerPrefs.GetInt("Dame", 10);
-        defense = PlayerPrefs.GetInt("Defense",10);
+        dame = thisLevel.dameAttack;
+        defense = thisLevel.defense;
     }
+
 
 
     //  xử lý các chỉ số cơ bản
@@ -399,10 +450,72 @@ public class PlayerController : MonoBehaviour
 
     public int GetMaxHealth(){
         int currentHealthArmor = GameController.instance.GetCurrentArmor() == null ? 0 : GameController.instance.GetCurrentArmor().HP;
-        return maxHeath + currentHealthArmor;
+        return maxHealth + currentHealthArmor;
     }
     
     public List<Skill> GetSkillsPlayer(){
         return this.skills;
+    }
+
+    // Giảm mana khi dùng chiêu
+    private void reduceMana(Skill skill){
+        if(currentMana >= skill.mana){
+            currentMana = currentMana - skill.mana;
+        }
+    }
+    public void addMana(int mana){
+        currentMana += mana;
+        if(currentMana > maxMana){
+            currentMana = maxMana;
+        }
+    }
+
+    public void addHealth(int hp){
+        currentHealth = currentHealth + hp;
+        if(currentHealth > maxHealth){
+            currentHealth = maxHealth;
+        }
+    }
+    public Level getNextLevel(){
+        try{
+            int idFinder = idLevelCurrent + 1;
+            if(idFinder == 7){
+                return null;
+            }
+            return levels.Find(level => level.idLevel == idFinder);
+        }
+        catch(Exception e){
+            return null;
+        }
+
+    }
+
+    public Level getCurrentLevel(){
+        return levels.Find(level => level.idLevel == idLevelCurrent);
+    }
+
+    public bool reduceCoin(int money){
+        if(coins < money){
+            return false;
+        }
+        coins = coins - money;
+        PlayerPrefs.SetInt("coins", coins);
+        return true;
+    }
+
+    public int GetCoins(){
+        return coins;
+    }
+
+    public void UpgradeLevel(){
+        
+        idLevelCurrent++;
+        PlayerPrefs.SetInt("idLevel", idLevelCurrent);
+        Debug.Log("UpgradeLevel " + idLevelCurrent);
+        LoadDataCharacter();
+        currentMana += 1000;
+        currentHealth += 1000;
+        PlayerPrefs.SetInt("CurrentHealth", currentHealth);
+        PlayerPrefs.SetInt("CurrentMana", currentMana);
     }
 }

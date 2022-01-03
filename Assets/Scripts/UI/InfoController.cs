@@ -50,7 +50,7 @@ public class InfoController : MonoBehaviour
         toolPanel.SetActive(false);
         Time.timeScale = 0;
         GameController.instance.isPaused = true;
-
+        // get data current of use
         int dameAttack = player.GetComponent<PlayerController>().GetDame();
         int defense = player.GetComponent<PlayerController>().GetDefense();
         int maxHP = player.GetComponent<PlayerController>().GetMaxHealth();

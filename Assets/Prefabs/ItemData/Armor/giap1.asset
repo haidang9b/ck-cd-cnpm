@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10aff9fd3c31f94c813d31d09a0bc5b, type: 3}
   m_Name: giap1
   m_EditorClassIdentifier: 
+  idItem: giap1
   itemName: Giap lv1
   itemDescription: Giap lv1 +500HP 20 chong chiu
+  slug: Assets/Sprites/UI/armor_item.png
   itemSpite: {fileID: -4108658575832489778, guid: 21e19b23f6d4c874e8a1455bb1de3bb9, type: 3}
   price: 5
   defense: 20

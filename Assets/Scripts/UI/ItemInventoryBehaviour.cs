@@ -44,28 +44,28 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
         }
         else{
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("<color=black><size=36><b>Name:</b></size></color> <color=orange><size=36><b>{0}</b></size></color>\n", _item.itemName);
+            stringBuilder.AppendFormat("<color=black><size=26><b>Name:</b></size></color> <color=orange><size=26><b>{0}</b></size></color>\n", _item.itemName);
 
             if(_item.GetType().ToString() == "Weapon"){
                 Weapon weapon = (Weapon)_item;
-                stringBuilder.AppendFormat("<color=black><size=36><b>Dame:</b></size></color> <color=red><size=36><b>{0}</b></size></color>\n", weapon.dame);
+                stringBuilder.AppendFormat("<color=black><size=26><b>Dame:</b></size></color> <color=red><size=26><b>{0}</b></size></color>\n", weapon.dame);
             }
             else if(_item.GetType().ToString() == "Armor"){
                 Armor armor = (Armor)_item;
-                stringBuilder.AppendFormat("<color=black><size=36><b>HP:</b></size></color> <color=red><size=36><b>{0}</b></size></color>\n", armor.HP);
-                stringBuilder.AppendFormat("<color=black><size=36><b>Defense:</b></size></color> <color=gray><size=36><b>{0}</b></size></color>\n", armor.HP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>HP:</b></size></color> <color=red><size=26><b>{0}</b></size></color>\n", armor.HP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>Defense:</b></size></color> <color=gray><size=26><b>{0}</b></size></color>\n", armor.HP);
             }
             else if(_item.GetType().ToString() == "HP"){
                 HP hp = (HP)_item;
-                stringBuilder.AppendFormat("<color=black><size=36><b>+ HP:</b></size></color> <color=red><size=36><b>{0}</b></size></color>\n", hp.rateHP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>+ HP:</b></size></color> <color=red><size=26><b>{0}</b></size></color>\n", hp.rateHP);
             }
             else if(_item.GetType().ToString() == "MP"){
                 MP mp = (MP)_item;
-                stringBuilder.AppendFormat("<color=black><size=36><b>+ MP:</b></size></color> <color=blue><size=36><b>{0}</b></size></color>\n", mp.rateMP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>+ MP:</b></size></color> <color=blue><size=26><b>{0}</b></size></color>\n", mp.rateMP);
             }
             
-            stringBuilder.AppendFormat("<color=black><size=36><b>Sell Price:</b></size></color> <color=yellow><size=36><b>{0}</b></size></color>\n", _item.price);
-            stringBuilder.AppendFormat("<color=black><size=36><b>Description:</b></size></color> <color=gray><size=36><b>{0}</b></size></color>\n", _item.itemDescription);
+            stringBuilder.AppendFormat("<color=black><size=26><b>Sell Price:</b></size></color> <color=yellow><size=26><b>{0}</b></size></color>\n", _item.price);
+            stringBuilder.AppendFormat("<color=black><size=26><b>Description:</b></size></color> <color=gray><size=26><b>{0}</b></size></color>\n", _item.itemDescription);
             return stringBuilder.ToString();
         }
     }
@@ -90,6 +90,35 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
                 if(thisItem.GetType().ToString() == "Weapon" || thisItem.GetType().ToString() == "Armor"){
                     GameController.instance.AddItemToEquipment(thisItem);
                     GameController.instance.RemoveItemInInventory(thisItem);
+                }
+                else if(thisItem.GetType().ToString() == "HP"){
+                    // dùng HP
+                    GameObject player = GameObject.FindGameObjectWithTag("Player");
+                    HP thisHP = (HP)thisItem;
+                    if(player != null){
+                        //  check xem hp hiện tại có bằng max hp hay không, nếu có thì kh đc dùng
+                        int currentHPPlayer = player.GetComponent<PlayerController>().GetCurrentHealth();
+                        int maxHPPlayer = player.GetComponent<PlayerController>().GetMaxHealth();
+                        if(currentHPPlayer < maxHPPlayer){
+                            player.GetComponent<PlayerController>().addHealth(thisHP.rateHP);
+                            GameController.instance.RemoveItemInInventory(thisItem);
+                        }
+                    }
+                    
+                }
+                else if(thisItem.GetType().ToString() == "MP"){
+                    //  dùng bình mana
+                    //  check xem mana hiện tại có bằng max mana hay không, nếu có thì kh đc dùng
+                    GameObject player = GameObject.FindGameObjectWithTag("Player");
+                    MP thisMP = (MP)thisItem;
+                    if(player != null){
+                        int currentManaPlayer = player.GetComponent<PlayerController>().GetCurrentMana();
+                        int maxManaPlayer = player.GetComponent<PlayerController>().GetMaxMana();
+                        if(currentManaPlayer < maxManaPlayer){
+                            player.GetComponent<PlayerController>().addMana(thisMP.rateMP);
+                            GameController.instance.RemoveItemInInventory(thisItem);
+                        }
+                    }
                 }
             }
         }

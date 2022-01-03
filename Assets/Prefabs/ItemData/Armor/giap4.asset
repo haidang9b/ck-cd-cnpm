@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10aff9fd3c31f94c813d31d09a0bc5b, type: 3}
   m_Name: giap4
   m_EditorClassIdentifier: 
+  idItem: giap4
   itemName: Giap lv4
   itemDescription: Giap lv4 +750HP 35 chong chiu
   itemSpite: {fileID: -2481063709629950610, guid: 21e19b23f6d4c874e8a1455bb1de3bb9, type: 3}

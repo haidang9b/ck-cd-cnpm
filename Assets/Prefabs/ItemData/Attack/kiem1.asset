@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3b560f58507ff04e83d7e05cfbff906, type: 3}
   m_Name: kiem1
   m_EditorClassIdentifier: 
+  idItem: kiem1
   itemName: Sword lv1
   itemDescription: Sword lv1 +10 attack dame
   itemSpite: {fileID: 21300000, guid: 65f9fc6415d71c143b354019dc32835b, type: 3}

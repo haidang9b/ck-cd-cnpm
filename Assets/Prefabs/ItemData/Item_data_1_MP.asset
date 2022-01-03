@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41c4977e07f8b3642ac09ed791c76a31, type: 3}
   m_Name: Item_data_1_MP
   m_EditorClassIdentifier: 
-  itemName: HP mini
-  itemDescription: HP Mini +50 HP
+  idItem: mpmini
+  itemName: MP mini
+  itemDescription: MP Mini +50 MP
+  slug: Assets/Sprites/UI/mp.png
   itemSpite: {fileID: 21300000, guid: 0fb59ddece78a1644ae66f2913e6b64d, type: 3}
   price: 5
   rateMP: 50

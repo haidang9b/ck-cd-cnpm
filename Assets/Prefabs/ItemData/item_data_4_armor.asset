@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10aff9fd3c31f94c813d31d09a0bc5b, type: 3}
   m_Name: item_data_4_armor
   m_EditorClassIdentifier: 
+  idItem: armorlv1
   itemName: Armor lv1
   itemDescription: Armor +50 defense
+  slug: 
   itemSpite: {fileID: 21300000, guid: 9ffcd8110ea080d48b020a12605fba0b, type: 3}
   price: 0
   defense: 50

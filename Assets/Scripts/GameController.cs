@@ -35,6 +35,9 @@ public class GameController : MonoBehaviour
     public AudioClip pickupAudio;
     private Item weaponCurrent = null;
     private Item armorCurrent = null;
+
+
+    public Text cointCurrentText;
     // Start is called before the first frame update
     void Awake(){
 
@@ -100,6 +103,11 @@ public class GameController : MonoBehaviour
     //   load data khi đầu game vào
     }
 
+    public void UpdateCoinText(){
+        int coinCurrent = player.GetComponent<PlayerController>().GetCoins();
+        cointCurrentText.text = coinCurrent + "";
+    }
+
     //  gắn giáp + vũ khí cho nhân vật
     public void AddItemToEquipment(Item item){
         if(item.GetType().ToString() == "Weapon"){
@@ -162,6 +170,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         DisplayManaAndHealth();
+        UpdateCoinText();
     }
 
     // xử lý thêm item khi nhặt đồ

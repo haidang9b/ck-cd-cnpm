@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int id { get; set;}
-    public string name { get; set;}
+    public int idEnemy { get; set;}
+    public string nameEnemy { get; set;}
     public string description { get; set;}
     public int dameAttack { get; set;}
     public int maxHealth { get; set;}

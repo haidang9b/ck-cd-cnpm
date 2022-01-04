@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BigMapController : MonoBehaviour
 {
-    public GameObject cameraBigMap;
+    public GameObject cameraBigMap; // camera này kh di chuyển, chỉ hướng vào toàn bản đồ
     public GameObject toolPanel;
     // Start is called before the first frame update
     void Start()

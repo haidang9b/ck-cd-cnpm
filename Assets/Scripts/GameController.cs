@@ -97,6 +97,9 @@ public class GameController : MonoBehaviour
         // cần check sound + effect
         float vol = PlayerPrefs.GetFloat("Volume");
         AudioListener.volume = vol;
+
+        DisplayItems();
+
     }
 
     private void InitData(){
@@ -179,17 +182,23 @@ public class GameController : MonoBehaviour
             audioSource.clip = pickupAudio;
             audioSource.Play();
         }
-        if(itemsInventory.Contains(_item) == false){
-            itemsInventory.Add(_item);
-            itemNumbers.Add(1);
-        }
-        else{
-            for(int i = 0; i< itemsInventory.Count; i++){
-                if(_item == itemsInventory[i]){
-                    itemNumbers[i]++;
+        if(itemsInventory.Count < slots.Length){
+            if(itemsInventory.Contains(_item) == false){
+                itemsInventory.Add(_item);
+                itemNumbers.Add(1);
+            }
+            else{
+                for(int i = 0; i< itemsInventory.Count; i++){
+                    if(_item == itemsInventory[i]){
+                        itemNumbers[i]++;
+                    }
                 }
             }
         }
+        else{
+            Debug.LogWarning("Khong the add");
+        }
+        
         DisplayItems();
     }
 

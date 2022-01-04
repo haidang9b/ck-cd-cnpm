@@ -69,20 +69,15 @@ public class PlayerController : MonoBehaviour
     // load levels
     List<Level> levels;
 
+    // tiền user có được
     private int coins;
-    // private static PlayerController instance = null;
-    // public static PlayerController Instance{
-    //     get{
-    //         if(instance == null){
-    //             instance = new PlayerController();
-    //         }
-    //         return instance;
-    //     }
-    //     private set{
-    //         instance = value;
-    //     }
-    // }
-    
+
+    // thời gian bắt đầu tính action tự động hồi máu + mana
+    private float nextActionTime = 0.0f;
+    // thời gian hồi sau bao nhiêu giây ( ở đây là 1 giây)
+    public float period = 1f;
+
+
     // Use this for initialization
     void Start ()
     {
@@ -140,6 +135,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+        // tăng máu + mana mỗi giây
+        autoUpHealthAndMana();
+
         // Increase timer that controls attack combo
         timeSinceAttack += Time.deltaTime;
 
@@ -168,7 +166,7 @@ public class PlayerController : MonoBehaviour
         // -- Handle input and movement --
         float inputX = Input.GetAxis("Horizontal");
 
-        // Swap direction of sprite depending on walk direction
+        // ĐỔi chiều nhân vât theo input đầu vào
         if (inputX > 0)
         {
             GetComponent<SpriteRenderer>().flipX = false;
@@ -181,7 +179,7 @@ public class PlayerController : MonoBehaviour
             facingDirection = -1;
         }
 
-        // Move
+        // Di chuyển - move
         if (!isRolling ){
             rb.velocity = new Vector2(inputX * speed, rb.velocity.y);
             
@@ -196,7 +194,7 @@ public class PlayerController : MonoBehaviour
         // isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
         // animator.SetBool("WallSlide", isWallSliding);
 
-        //Death
+        // Chết - Death
         if (Input.GetKeyDown("e") && !isRolling)
         {
             if(hasEffectSound){
@@ -211,7 +209,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown("q") && !isRolling)
             animator.SetTrigger("Hurt");
 
-        //Attack
+        // Xử lý tấn công
         else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling && currentMana > skillAttack1.mana)
         {   
             if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2) && skills.Contains(skillAttack3)){
@@ -221,7 +219,7 @@ public class PlayerController : MonoBehaviour
                     audioSource.clip = attackAudio;
                     audioSource.Play();
                 }
-                // Loop back to one after third attack
+                // Kiểm tra xem có phải đang là skill attack cuối hay không, nếu phải thì quay ngược lại
                 if (currentAttack > 3)
                     currentAttack = 1;
 
@@ -229,7 +227,7 @@ public class PlayerController : MonoBehaviour
                 if (timeSinceAttack > 1.0f)
                     currentAttack = 1;
 
-                // Call one of three attack animations "Attack1", "Attack2", "Attack3"
+                // Gọi 1 trong 3 animations "Attack1", "Attack2", "Attack3"
                 animator.SetTrigger("Attack" + currentAttack);
                 
                 // Reset timer
@@ -242,7 +240,7 @@ public class PlayerController : MonoBehaviour
                     audioSource.clip = attackAudio;
                     audioSource.Play();
                 }
-                // Loop back to one after third attack
+                // Kiểm tra xem có phải đang là skill attack cuối hay không, nếu phải thì quay ngược lại
                 if (currentAttack > 2)
                     currentAttack = 1;
 
@@ -250,7 +248,7 @@ public class PlayerController : MonoBehaviour
                 if (timeSinceAttack > 1.0f)
                     currentAttack = 1;
 
-                // Call one of two attack animations "Attack1", "Attack2"
+                // Gọi 1 trong 2 animations "Attack1", "Attack2"
                 animator.SetTrigger("Attack" + currentAttack);
                 
                 // Reset timer
@@ -263,7 +261,7 @@ public class PlayerController : MonoBehaviour
                     audioSource.clip = attackAudio;
                     audioSource.Play();
                 }
-                // Loop back to one after third attack
+                // Kiểm tra xem có phải đang là skill attack cuối hay không, nếu phải thì quay ngược lại
                 if (currentAttack > 1)
                     currentAttack = 1;
 
@@ -271,7 +269,7 @@ public class PlayerController : MonoBehaviour
                 if (timeSinceAttack > 1.0f)
                     currentAttack = 1;
 
-                // Call one of three attack animations "Attack1"
+                // Gọi 1 animations "Attack1"
                 animator.SetTrigger("Attack" + currentAttack);
                 
                 // Reset timer
@@ -306,16 +304,14 @@ public class PlayerController : MonoBehaviour
         }
             
         // dame enemy = dame enemy - defense player 
-        //Jump
+        // Jump -  Xử lý nhảy 1 lần và nhảy 2 lần
         else if (Input.GetKeyDown("space") && !isRolling  && skills.Contains(skillJump) &&  currentMana >= skillJump.mana )
         {
-            
-            if(isGround){         
+            if(isGround){ // nếu đang là mặt đất thì có thể nhảy        
                 Jump();
-                CanDoubleJump = true;
+                CanDoubleJump = true; // gọi nhảy 1 lần , thức là first time thì có thể nhảy lần 2
             }
-            else if(CanDoubleJump ){
-                // Debug.Log("Nhảy lần 2");
+            else if(CanDoubleJump ){ // nhảy lần 2
                 Jump();
                 CanDoubleJump = false;
             }
@@ -333,13 +329,12 @@ public class PlayerController : MonoBehaviour
         else
         {
             // Prevents flickering transitions to idle
-
             delayToIdle -= Time.deltaTime;
-            
             if(delayToIdle < 0)
                 animator.SetInteger("AnimState", 0);
         }
 
+        // giao tiếp vs NPC
         if(Input.GetKeyDown(KeyCode.Z)){
             InteractNPC();
         }
@@ -347,7 +342,6 @@ public class PlayerController : MonoBehaviour
 
     // xử lý giao tiếp vs npc
     void InteractNPC(){
-        
         if(facingDirection > 0){
             var collider = Physics2D.OverlapCircle(attackPointRight.position, 0.3f, interactableLayers);
             if(collider != null){
@@ -413,7 +407,6 @@ public class PlayerController : MonoBehaviour
 
     // load data cho character
     private void LoadDataCharacter(){
-        
         Level thisLevel = getCurrentLevel();
         coins = PlayerPrefs.GetInt("coins", 100000);   
         maxHealth = thisLevel.maxHealth;
@@ -431,6 +424,7 @@ public class PlayerController : MonoBehaviour
         int dameCurrentWeapon = GameController.instance.GetCurrentWeapon() == null ? 0 : GameController.instance.GetCurrentWeapon().dame;
         return dame + dameCurrentWeapon;
     }
+
     public int GetDefense(){
         int currentDefense = GameController.instance.GetCurrentArmor() == null ? 0 : GameController.instance.GetCurrentArmor().defense;
         return defense + currentDefense;
@@ -449,12 +443,22 @@ public class PlayerController : MonoBehaviour
     }
 
     public int GetMaxHealth(){
-        int currentHealthArmor = GameController.instance.GetCurrentArmor() == null ? 0 : GameController.instance.GetCurrentArmor().HP;
-        return maxHealth + currentHealthArmor;
+        return maxHealth;
     }
     
     public List<Skill> GetSkillsPlayer(){
         return this.skills;
+    }
+    // tự động tăng máu mỗi giây
+    private void autoUpHealthAndMana(){
+        if(Time.time > nextActionTime){ // check thời gian sau mỗi giây
+            nextActionTime = Time.time + period;
+
+            int rateRecovered = 3; // số lượng máu + mana hồi mỗi giây theo cấp độ
+            addMana(rateRecovered*idLevelCurrent);
+            addHealth(rateRecovered*idLevelCurrent);
+        }
+        
     }
 
     // Giảm mana khi dùng chiêu
@@ -487,7 +491,6 @@ public class PlayerController : MonoBehaviour
         catch(Exception e){
             return null;
         }
-
     }
 
     public Level getCurrentLevel(){
@@ -507,8 +510,8 @@ public class PlayerController : MonoBehaviour
         return coins;
     }
 
+    // Xử lý up level cho nhân vật
     public void UpgradeLevel(){
-        
         idLevelCurrent++;
         PlayerPrefs.SetInt("idLevel", idLevelCurrent);
         Debug.Log("UpgradeLevel " + idLevelCurrent);
@@ -517,5 +520,13 @@ public class PlayerController : MonoBehaviour
         currentHealth += 1000;
         PlayerPrefs.SetInt("CurrentHealth", currentHealth);
         PlayerPrefs.SetInt("CurrentMana", currentMana);
+
+        // cần save data ở đây
+    }
+
+    public void reduceHealth(int dame){
+        int dameNeedReduce = dame - GetDefense();
+        currentHealth = currentHealth - dameNeedReduce;
+        PlayerPrefs.SetInt("CurrentHealth", currentHealth);
     }
 }

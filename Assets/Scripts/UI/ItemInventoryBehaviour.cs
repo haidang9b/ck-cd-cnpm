@@ -14,6 +14,9 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
     Vector2 positionDisplay;
     
     private Item GetThisItem(){
+        if(buttonID > GameController.instance.itemsInventory.Count){
+            return null;
+        }
         for(int i = 0; i< GameController.instance.itemsInventory.Count; i++){
             if(buttonID == i){
                 thisItem = GameController.instance.itemsInventory[i];
@@ -52,8 +55,7 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
             }
             else if(_item.GetType().ToString() == "Armor"){
                 Armor armor = (Armor)_item;
-                stringBuilder.AppendFormat("<color=black><size=26><b>HP:</b></size></color> <color=red><size=26><b>{0}</b></size></color>\n", armor.HP);
-                stringBuilder.AppendFormat("<color=black><size=26><b>Defense:</b></size></color> <color=gray><size=26><b>{0}</b></size></color>\n", armor.HP);
+                stringBuilder.AppendFormat("<color=black><size=26><b>Defense:</b></size></color> <color=gray><size=26><b>{0}</b></size></color>\n", armor.defense);
             }
             else if(_item.GetType().ToString() == "HP"){
                 HP hp = (HP)_item;
@@ -72,6 +74,7 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
     // handler exit in area item
     public void OnPointerExit(PointerEventData eventData)
     {
+        GetThisItem();
         if(thisItem != null){
             Debug.Log("Exit " + thisItem.itemName + " slot");
             tooltip.HideTooltip();

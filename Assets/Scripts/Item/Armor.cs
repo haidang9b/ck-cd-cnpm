@@ -7,5 +7,5 @@ public class Armor : Item
 {
     
     public int defense;
-    public int HP;
+    // public int HP;
 }

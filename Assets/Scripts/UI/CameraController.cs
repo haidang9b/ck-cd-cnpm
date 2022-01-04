@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform target;
+    public Transform target; // đối tượng cần được di chuyển theo camera, 
     // Start is called before the first frame update
     void Start()
     {

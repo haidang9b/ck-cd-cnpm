@@ -15,6 +15,7 @@ MonoBehaviour:
   idItem: cung3
   itemName: Archery lv3
   itemDescription: Archery lv3 +30 attack dame for player
+  slug: 
   itemSpite: {fileID: 21300000, guid: a5b0cf20886c6d84a9c5c56ce492f915, type: 3}
-  price: 15
+  price: 1500
   dame: 30

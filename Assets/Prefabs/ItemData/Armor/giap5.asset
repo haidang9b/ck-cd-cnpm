@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: giap5
   m_EditorClassIdentifier: 
   idItem: giap5
-  itemName: Giap lv1
-  itemDescription: Giap lv1 +750HP 40 chong chiu
+  itemName: Giap level 5
+  itemDescription: Giap level 5 + 50 chong chiu
+  slug: 
   itemSpite: {fileID: 5627169202515539918, guid: 21e19b23f6d4c874e8a1455bb1de3bb9, type: 3}
-  price: 5
-  defense: 40
-  HP: 750
+  price: 2500
+  defense: 50

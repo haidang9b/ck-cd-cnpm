@@ -15,6 +15,7 @@ MonoBehaviour:
   idItem: cung2
   itemName: Archery lv2
   itemDescription: Archery lv2 +20 attack dame for player
+  slug: 
   itemSpite: {fileID: 21300000, guid: 4f2ec4391ae196b4b81f0c4b74c7d4c3, type: 3}
-  price: 10
+  price: 1000
   dame: 20

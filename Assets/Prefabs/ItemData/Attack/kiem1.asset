@@ -15,6 +15,7 @@ MonoBehaviour:
   idItem: kiem1
   itemName: Sword lv1
   itemDescription: Sword lv1 +10 attack dame
+  slug: 
   itemSpite: {fileID: 21300000, guid: 65f9fc6415d71c143b354019dc32835b, type: 3}
-  price: 5
+  price: 500
   dame: 10

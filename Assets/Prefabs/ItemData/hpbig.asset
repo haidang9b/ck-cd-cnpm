@@ -9,14 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e10aff9fd3c31f94c813d31d09a0bc5b, type: 3}
-  m_Name: item_data_4_armor
+  m_Script: {fileID: 11500000, guid: d7c3084800b93004bb514dfe5a1f64fb, type: 3}
+  m_Name: hpbig
   m_EditorClassIdentifier: 
-  idItem: armorlv1
-  itemName: Armor lv1
-  itemDescription: Armor +50 defense
+  idItem: hpbig
+  itemName: HP Big
+  itemDescription: HP Big + 120 HP cho player
   slug: 
-  itemSpite: {fileID: 21300000, guid: 9ffcd8110ea080d48b020a12605fba0b, type: 3}
-  price: 0
-  defense: 50
-  HP: 500
+  itemSpite: {fileID: 0}
+  price: 100
+  rateHP: 120

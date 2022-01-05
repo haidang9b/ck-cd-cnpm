@@ -15,6 +15,7 @@ MonoBehaviour:
   idItem: cung7
   itemName: Archery lv7
   itemDescription: Archery lv7 +70 attack dame for player
+  slug: 
   itemSpite: {fileID: 21300000, guid: 91b72917ef84b6b49b86a1375201cdf4, type: 3}
-  price: 40
+  price: 3500
   dame: 70

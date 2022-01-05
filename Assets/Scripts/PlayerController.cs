@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private float rollDuration = 8.0f / 14.0f;
     private float rollCurrentTime; 
 
+    private Vector3 startPosition;
     private List<Skill> skills= new List<Skill>();
     //  các skill của player 
     Skill skillJump = new Skill{name="Jump", description="Player can double jump", mana=10};
@@ -81,7 +82,7 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        
+        startPosition = transform.position;
         PlayerPrefs.DeleteAll();
         idLevelCurrent = PlayerPrefs.GetInt("idLevel",1);
         animator = GetComponent<Animator>();
@@ -102,12 +103,12 @@ public class PlayerController : MonoBehaviour
     }
 
     private void InitDataLevel(){
-        levels.Add(new Level{idLevel =1, dameAttack = 10, defense = 10, maxMana = 1000, maxHealth = 1000, cost =100});
-        levels.Add(new Level{idLevel =2, dameAttack = 15, defense = 20, maxMana = 2000, maxHealth = 2000, cost =200});
-        levels.Add(new Level{idLevel =3, dameAttack = 20, defense = 30, maxMana = 3000, maxHealth = 3000, cost =300});
-        levels.Add(new Level{idLevel =4, dameAttack = 25, defense = 40, maxMana = 4000, maxHealth = 4000, cost =400});
-        levels.Add(new Level{idLevel =5, dameAttack = 30, defense = 50, maxMana = 5000, maxHealth = 5000, cost =500});
-        levels.Add(new Level{idLevel =6, dameAttack = 35, defense = 60, maxMana = 6000, maxHealth = 6000, cost =600});
+        levels.Add(new Level{idLevel =1, dameAttack = 10, defense = 10, maxMana = 1000, maxHealth = 1000, cost =1000});
+        levels.Add(new Level{idLevel =2, dameAttack = 20, defense = 20, maxMana = 2000, maxHealth = 2000, cost =2000});
+        levels.Add(new Level{idLevel =3, dameAttack = 30, defense = 30, maxMana = 3000, maxHealth = 3000, cost =3000});
+        levels.Add(new Level{idLevel =4, dameAttack = 40, defense = 40, maxMana = 4000, maxHealth = 4000, cost =4000});
+        levels.Add(new Level{idLevel =5, dameAttack = 50, defense = 50, maxMana = 5000, maxHealth = 5000, cost =5000});
+        levels.Add(new Level{idLevel =6, dameAttack = 60, defense = 60, maxMana = 6000, maxHealth = 6000, cost =6000});
     }
 
     private void LoadAudio(){
@@ -195,19 +196,33 @@ public class PlayerController : MonoBehaviour
         // animator.SetBool("WallSlide", isWallSliding);
 
         // Chết - Death
-        if (Input.GetKeyDown("e") && !isRolling)
-        {
+        if(currentHealth <= 0){
+            
             if(hasEffectSound){
                 audioSource.clip = hurtAudio;
                 audioSource.Play();
             }
             animator.SetBool("noBlood", noBlood);
             animator.SetTrigger("Death");
+            currentHealth = (int)0.7f*maxHealth;
+            currentMana = (int)0.7f*maxMana;
+            PlayerPrefs.SetInt("CurrentHealth", currentHealth);
+            PlayerPrefs.SetInt("CurrentMana", currentMana);
+            transform.position = startPosition;
         }
+        // if (Input.GetKeyDown("e") && !isRolling)
+        // {
+        //     if(hasEffectSound){
+        //         audioSource.clip = hurtAudio;
+        //         audioSource.Play();
+        //     }
+        //     animator.SetBool("noBlood", noBlood);
+        //     animator.SetTrigger("Death");
+        // }
             
         //Hurt
-        else if (Input.GetKeyDown("q") && !isRolling)
-            animator.SetTrigger("Hurt");
+        // else if (Input.GetKeyDown("q") && !isRolling)
+        //     animator.SetTrigger("Hurt");
 
         // Xử lý tấn công
         else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling && currentMana > skillAttack1.mana)
@@ -525,6 +540,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void reduceHealth(int dame){
+        animator.SetTrigger("Hurt");
         int dameNeedReduce = dame - GetDefense();
         currentHealth = currentHealth - dameNeedReduce;
         PlayerPrefs.SetInt("CurrentHealth", currentHealth);

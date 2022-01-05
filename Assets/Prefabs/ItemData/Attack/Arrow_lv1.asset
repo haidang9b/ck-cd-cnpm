@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3b560f58507ff04e83d7e05cfbff906, type: 3}
   m_Name: Arrow_lv1
   m_EditorClassIdentifier: 
+  idItem: arrowlv1
   itemName: Arrow Level 1
   itemDescription: Arrow Level 1 + 50 attack dame
+  slug: 
   itemSpite: {fileID: 21300000, guid: ae2f0d7809d99ae43a0c1d8e2367d8d6, type: 3}
   price: 50
   dame: 50

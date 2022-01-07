@@ -17,5 +17,5 @@ MonoBehaviour:
   itemDescription: Arrow Level 1 + 50 attack dame
   slug: 
   itemSpite: {fileID: 21300000, guid: ae2f0d7809d99ae43a0c1d8e2367d8d6, type: 3}
-  price: 50
-  dame: 50
+  price: 500
+  dame: 10

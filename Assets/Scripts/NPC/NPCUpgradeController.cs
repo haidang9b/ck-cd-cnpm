@@ -73,10 +73,10 @@ public class NPCUpgradeController : MonoBehaviour, Interactable
                 nextDefenseText.text = nextLevel.defense + "";
                 nextMaxManaText.text = nextLevel.maxMana + "";
                 nextMaxHealthText.text = nextLevel.maxHealth + "";
-                totalCostNextText.text = "Total cost: " + nextLevel.cost;
+                totalCostNextText.text = "Total cost: " + nextLevel.fee;
                 levelNextText.text = "Level "+nextLevel.idLevel;
                 // disable if tiền không đủ, enable nếu tiền đủ
-                buttonUpgradeLevel.interactable= player.GetComponent<PlayerController>().GetCoins() >= nextLevel.cost;
+                buttonUpgradeLevel.interactable= player.GetComponent<PlayerController>().GetCoins() >= nextLevel.fee;
             }
             else{
                 nextDameText.text = "";
@@ -97,7 +97,7 @@ public class NPCUpgradeController : MonoBehaviour, Interactable
         if(player != null){
             Level nextLevel = player.GetComponent<PlayerController>().getNextLevel();
             player.GetComponent<PlayerController>().UpgradeLevel();
-            player.GetComponent<PlayerController>().reduceCoin(nextLevel.cost);
+            player.GetComponent<PlayerController>().reduceCoin(nextLevel.fee);
         }
         LoadLabel();
     }

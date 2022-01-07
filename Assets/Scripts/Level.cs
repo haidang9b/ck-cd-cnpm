@@ -9,5 +9,5 @@ public class Level
     public int defense { get; set; }
     public int maxMana { get; set; }
     public int maxHealth {get;set;}
-    public int cost {get; set; }
+    public int fee {get; set; }
 }

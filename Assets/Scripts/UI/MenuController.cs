@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+
 public class MenuController : MonoBehaviour
 {
     public GameObject MainPanel;
@@ -16,6 +20,8 @@ public class MenuController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // StartCoroutine(GetSetting());
+        GetSettings();
         LoadVolume();
         audioSource = GetComponent<AudioSource>();
         // OpenMain();
@@ -24,6 +30,7 @@ public class MenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Debug.Log("Token :;;; "+ PlayerPrefs.GetString("token"));
         float vol = PlayerPrefs.GetFloat("Volume");
         AudioListener.volume = vol;
 
@@ -38,11 +45,12 @@ public class MenuController : MonoBehaviour
                 audioSource.Pause();
             }
         }
-        Debug.Log("has music " + PlayerPrefs.GetInt("HasMusic"));
+        // Debug.Log("has music " + PlayerPrefs.GetInt("HasMusic"));
     }
 
     // load data nếu chơi game cũ
     public void ContinuteGame(){
+        PlayerPrefs.Save();
         LoadData();
         StartCoroutine(ChangeLevel());
         SceneManager.LoadScene("SceneGame");
@@ -50,12 +58,65 @@ public class MenuController : MonoBehaviour
     
     // xử lý load data game cũ player đã chơi
     private void LoadData(){
+        
+    }
+    
+
+    //  get request - lấy cài đặt
+
+    private async void GetSettings(){
+        string username = DBManager.USERNAME;
+        string urlRequest = ConstantServer.URL_SETTING+"/"+username;
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+        
+        if(www.error != null){
+                // Debug.Log("Error : " + www.error);
+        }
+        else{
+            // Debug.Log("Result "+ www.downloadHandler.text);
+            SettingDTO setting = new SettingDTO();
+            setting = JsonConvert.DeserializeObject<SettingDTO>(www.downloadHandler.text);
+
+            volumeSlider.value = setting.volume/100.0f;
+            AudioListener.volume = setting.volume/100.0f;
+            toggleMusic.isOn = setting.hasMusic;
+            toggleEffectSound.isOn = setting.hasEffect;  
+            PlayerPrefs.SetFloat("Volume", setting.volume/100.0f);
+            PlayerPrefs.SetInt("HasMusic", setting.hasMusic ? 1 : 0);
+            PlayerPrefs.SetInt("HasEffectSound", setting.hasEffect ? 1 : 0);
+        }
 
     }
+
     // start game mới
     public void NewGame(){
+        ResetGameForUser();
         StartCoroutine(ChangeLevel());
         SceneManager.LoadScene("CutScene");
+    }
+
+    private async void ResetGameForUser(){
+        var urlRequest = ConstantServer.URL_NEW_GAME + "/" + DBManager.USERNAME;
+        var www = new UnityWebRequest (urlRequest, "POST");
+        www.SetRequestHeader("Content-Type", "application/json");
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+        if (www.error != null)
+        {
+            Debug.Log("Error: " + www.error);
+        }
+        else
+        {
+            Debug.Log("Rest to new Game: OK OK OK");
+        }
     }
 
     public void OpenOptions(){
@@ -70,15 +131,7 @@ public class MenuController : MonoBehaviour
 
     // load âm thanh, hiệu ứng
     void LoadVolume(){
-        float vol = PlayerPrefs.GetFloat("Volume");
-        volumeSlider.value = vol;
-        AudioListener.volume = vol;
-
-        bool hasMusic = PlayerPrefs.GetInt("HasMusic", 0) == 0? false: true;
-        bool hasEffectSound = PlayerPrefs.GetInt("HasEffectSound", 0) == 0? false: true;
-
-        toggleMusic.isOn = hasMusic;
-        toggleEffectSound.isOn = hasEffectSound;        
+        
     }
 
     public void VolumeChanged(){
@@ -100,6 +153,8 @@ public class MenuController : MonoBehaviour
     }
     public void Logout(){
         // clear data
+        DBManager.USERNAME = "";
+        DBManager.TOKEN = "";
         StartCoroutine(ChangeLevel());
         SceneManager.LoadScene("Login");
     }

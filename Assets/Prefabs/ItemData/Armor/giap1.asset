@@ -18,4 +18,4 @@ MonoBehaviour:
   slug: Assets/Sprites/UI/armor_item.png
   itemSpite: {fileID: -4108658575832489778, guid: 21e19b23f6d4c874e8a1455bb1de3bb9, type: 3}
   price: 500
-  defense: 20
+  defense: 10

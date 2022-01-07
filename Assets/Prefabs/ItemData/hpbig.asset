@@ -16,6 +16,6 @@ MonoBehaviour:
   itemName: HP Big
   itemDescription: HP Big + 120 HP cho player
   slug: 
-  itemSpite: {fileID: 0}
+  itemSpite: {fileID: 21300000, guid: 5ac25e4613d130548af83c6038636908, type: 3}
   price: 100
   rateHP: 120

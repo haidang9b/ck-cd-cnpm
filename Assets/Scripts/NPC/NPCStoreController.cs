@@ -5,19 +5,26 @@ using UnityEngine.UI;
 
 public class NPCStoreController : MonoBehaviour, Interactable
 {
-    public List<Item> items; // list item đang bán
+    private List<Item> items; // list item đang bán
     public GameObject prefab;
     public GameObject itemContainer;
     public GameObject panelMain;
     public GameObject panelNPCStore;
     float widthContent, heightContent;
     void Start(){
+        // StartCoroutine(GetItems());
+        items = GameController.instance.itemsInGame;
         CloseDialogPanel();
         LoadItemStore();
         RectTransform rt = (RectTransform)itemContainer.transform;
         widthContent = rt.rect.width;
         heightContent = rt.rect.height;
     }
+
+    // get item từ database, sau đó so sánh vs item đang có
+    // private IEnumerator GetItems(){
+
+    // }
     public void Interact()
     {
         panelNPCStore.SetActive(true);

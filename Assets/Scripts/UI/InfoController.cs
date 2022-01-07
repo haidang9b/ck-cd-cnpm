@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class InfoController : MonoBehaviour
 {
     private GameObject player;
+    public Text txtUsername;
     public Text txtDame;
     public Text txtDefense;
     public Text txtMaxHP;
@@ -24,6 +25,7 @@ public class InfoController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        txtUsername.text = DBManager.USERNAME;
         InformationControl();
     }
 

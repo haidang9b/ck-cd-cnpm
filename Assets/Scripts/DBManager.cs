@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DBManager : MonoBehaviour
+public static class DBManager 
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static string USERNAME = "";
+    public static string TOKEN = "";
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

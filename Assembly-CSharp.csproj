@@ -36,6 +36,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Models\AccountDTO.cs" />
      <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Random Tile\Scripts\RandomTile.cs" />
      <Compile Include="Assets\Scripts\UI\BigMapController.cs" />
@@ -49,9 +50,11 @@
      <Compile Include="Assets\Scripts\Enemy\GroundEnemy.cs" />
      <Compile Include="Assets\Scripts\Enemy\Bullet.cs" />
      <Compile Include="Assets\Scripts\Item\Item.cs" />
+     <Compile Include="Assets\Scripts\Models\SettingDTO.cs" />
      <Compile Include="Assets\Scripts\UI\Destroyer.cs" />
      <Compile Include="Assets\Scripts\CutScene.cs" />
      <Compile Include="Assets\Scripts\Hero\Sensor_HeroKnight.cs" />
+     <Compile Include="Assets\Scripts\Item\DevilFruits.cs" />
      <Compile Include="Assets\Scripts\UI\MenuController.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyController.cs" />
      <Compile Include="Assets\Scripts\Item\Weapon.cs" />
@@ -63,6 +66,7 @@
      <Compile Include="Assets\Scripts\UI\Tooltips.cs" />
      <Compile Include="Assets\Scripts\Enemy\GatorBullet.cs" />
      <Compile Include="Assets\Scripts\Item\PickUpItem.cs" />
+     <Compile Include="Assets\Scripts\Teleport.cs" />
      <Compile Include="Assets\Scripts\Item\Armor.cs" />
      <Compile Include="Assets\Scripts\Hero\Skill.cs" />
      <Compile Include="Assets\Scripts\UI\ItemEquipmentBehavior.cs" />
@@ -71,24 +75,28 @@
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Tile\Scripts\RuleTile.cs" />
      <Compile Include="Assets\Scripts\Item\MP.cs" />
      <Compile Include="Assets\Scripts\Item\HP.cs" />
+     <Compile Include="Assets\Scripts\ConstantServer.cs" />
+     <Compile Include="Assets\Scripts\UI\ItemStoreBehaviour.cs" />
      <Compile Include="Assets\Scripts\Level.cs" />
      <Compile Include="Assets\Scripts\Hero\HeroKnight.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\SaveController.cs" />
      <Compile Include="Assets\Scripts\NPC\NPCStoreController.cs" />
      <Compile Include="Assets\Scripts\Enemy\AggroController.cs" />
-     <Compile Include="Assets\Scripts\BaseValue.cs" />
      <Compile Include="Assets\Scripts\DBManager.cs" />
      <Compile Include="Assets\Scripts\Enemy\TestEnemy.cs" />
      <Compile Include="Assets\Scripts\UI\BackMenu.cs" />
      <Compile Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Animated Tile\Scripts\AnimatedTile.cs" />
      <Compile Include="Assets\Hero Knight - Pixel Art\ColorSwap\ColorSwap_HeroKnight.cs" />
+     <Compile Include="Assets\Scripts\Models\LoginDTO.cs" />
      <Compile Include="Assets\Scripts\Hero\DestroyEvent_HeroKnight.cs" />
      <Compile Include="Assets\Scripts\LoginController.cs" />
+     <Compile Include="Assets\Scripts\UI\MissionController.cs" />
      <Compile Include="Assets\Scripts\UI\FaderScript.cs" />
      <Compile Include="Assets\Scripts\UI\EquipmentController.cs" />
      <Compile Include="Assets\Scripts\MusicBackgroundController.cs" />
      <Compile Include="Assets\Scripts\UI\InventoryController.cs" />
-     <Compile Include="Assets\Scripts\UI\ItemStoreBehaviour.cs" />
+     <Compile Include="Assets\Scripts\Hero\SkillController.cs" />
      <None Include="Assets\TileMap Auto Rule\2d-extras-master\Assets\Tilemap\Tiles\Rule Tile\ScriptTemplates\NewCustomRuleTile.cs.txt" />
      <None Include="Assets\TileMap Auto Rule\license.txt" />
      <None Include="Assets\Sprites\Enemy\License.txt" />

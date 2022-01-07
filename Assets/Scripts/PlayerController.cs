@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class PlayerController : MonoBehaviour
 {
@@ -49,14 +52,18 @@ public class PlayerController : MonoBehaviour
     private float rollCurrentTime; 
 
     private Vector3 startPosition;
+
+
+
+    // all skill in game
     private List<Skill> skills= new List<Skill>();
     //  các skill của player 
-    Skill skillJump = new Skill{name="Jump", description="Player can double jump", mana=10};
-    Skill skillRolling = new Skill{name="Rolling", description="Player can rolling", mana=15};
-    Skill skillBlock = new Skill{name="Block", description="Player can block weapon of enemies", mana=20};
-    Skill skillAttack1 = new Skill{name="Attack 1", description="Player can attack 1", mana=20};
-    Skill skillAttack2 = new Skill{name="Attack 2", description="Player can attack 2", mana=20};
-    Skill skillAttack3 = new Skill{name="Attack 3", description="Player can attack 3", mana=20};
+    Skill skillJump;
+    Skill skillRolling;
+    Skill skillBlock;
+    Skill skillAttack1;
+    Skill skillAttack2;
+    Skill skillAttack3;
     private bool CanDoubleJump;
     
     // audio source
@@ -68,7 +75,7 @@ public class PlayerController : MonoBehaviour
     private bool hasEffectSound;
     
     // load levels
-    List<Level> levels;
+    List<Level> levels = new List<Level>();
 
     // tiền user có được
     private int coins;
@@ -78,13 +85,14 @@ public class PlayerController : MonoBehaviour
     // thời gian hồi sau bao nhiêu giây ( ở đây là 1 giây)
     public float period = 1f;
 
+    // time check có block hay không?
+    public float timeIsBlock = 1f;
 
+    private GameObject currentTeleporter;
     // Use this for initialization
     void Start ()
     {
         startPosition = transform.position;
-        PlayerPrefs.DeleteAll();
-        idLevelCurrent = PlayerPrefs.GetInt("idLevel",1);
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
@@ -95,21 +103,17 @@ public class PlayerController : MonoBehaviour
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
         levels = new List<Level>();
-        InitDataLevel();
-        LoadDataCharacter();
-        InitSkill();
-
+        // InitDataLevel();
+        LoadLevels();
+        
+        GetDataSkill();
+        
         LoadAudio();
-    }
+        GetDevilFruit();
 
-    private void InitDataLevel(){
-        levels.Add(new Level{idLevel =1, dameAttack = 10, defense = 10, maxMana = 1000, maxHealth = 1000, cost =1000});
-        levels.Add(new Level{idLevel =2, dameAttack = 20, defense = 20, maxMana = 2000, maxHealth = 2000, cost =2000});
-        levels.Add(new Level{idLevel =3, dameAttack = 30, defense = 30, maxMana = 3000, maxHealth = 3000, cost =3000});
-        levels.Add(new Level{idLevel =4, dameAttack = 40, defense = 40, maxMana = 4000, maxHealth = 4000, cost =4000});
-        levels.Add(new Level{idLevel =5, dameAttack = 50, defense = 50, maxMana = 5000, maxHealth = 5000, cost =5000});
-        levels.Add(new Level{idLevel =6, dameAttack = 60, defense = 60, maxMana = 6000, maxHealth = 6000, cost =6000});
+       
     }
+    
 
     private void LoadAudio(){
         bool hasMusic = PlayerPrefs.GetInt("HasMusic", 0) == 0 ? false : true;
@@ -125,20 +129,13 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void InitSkill(){
-        skills.Add(skillJump);
-        skills.Add(skillBlock);
-        skills.Add(skillRolling);
-        skills.Add(skillAttack1);
-        skills.Add(skillAttack2);
-        skills.Add(skillAttack3);
-    }
+
     // Update is called once per frame
     void Update ()
     {
         // tăng máu + mana mỗi giây
         autoUpHealthAndMana();
-
+        timeIsBlock += Time.deltaTime;
         // Increase timer that controls attack combo
         timeSinceAttack += Time.deltaTime;
 
@@ -190,44 +187,16 @@ public class PlayerController : MonoBehaviour
         //Set AirSpeed in animator
         animator.SetFloat("AirSpeedY", rb.velocity.y);
 
-        // -- Handle Animations --
-        //Wall Slide
-        // isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
-        // animator.SetBool("WallSlide", isWallSliding);
-
         // Chết - Death
         if(currentHealth <= 0){
             
-            if(hasEffectSound){
-                audioSource.clip = hurtAudio;
-                audioSource.Play();
-            }
-            animator.SetBool("noBlood", noBlood);
-            animator.SetTrigger("Death");
-            currentHealth = (int)0.7f*maxHealth;
-            currentMana = (int)0.7f*maxMana;
-            PlayerPrefs.SetInt("CurrentHealth", currentHealth);
-            PlayerPrefs.SetInt("CurrentMana", currentMana);
-            transform.position = startPosition;
+
         }
-        // if (Input.GetKeyDown("e") && !isRolling)
-        // {
-        //     if(hasEffectSound){
-        //         audioSource.clip = hurtAudio;
-        //         audioSource.Play();
-        //     }
-        //     animator.SetBool("noBlood", noBlood);
-        //     animator.SetTrigger("Death");
-        // }
-            
-        //Hurt
-        // else if (Input.GetKeyDown("q") && !isRolling)
-        //     animator.SetTrigger("Hurt");
 
         // Xử lý tấn công
-        else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling && currentMana > skillAttack1.mana)
+        else if(Input.GetMouseButtonDown(0) && timeSinceAttack > 0.25f && !isRolling)
         {   
-            if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2) && skills.Contains(skillAttack3)){
+            if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2) && skills.Contains(skillAttack3)  && currentMana > skillAttack1.mana){
                 Attack();
                 currentAttack++;
                 if(hasEffectSound){
@@ -248,7 +217,7 @@ public class PlayerController : MonoBehaviour
                 // Reset timer
                 timeSinceAttack = 0.0f;
             }
-            else if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2)){
+            else if(skills.Contains(skillAttack1) && skills.Contains(skillAttack2)  && currentMana > skillAttack1.mana){
                 Attack();
                 currentAttack++;
                 if(hasEffectSound){
@@ -269,7 +238,7 @@ public class PlayerController : MonoBehaviour
                 // Reset timer
                 timeSinceAttack = 0.0f;
             }
-            else if(skills.Contains(skillAttack1)){
+            else if(skills.Contains(skillAttack1)  && currentMana > skillAttack1.mana){
                 Attack();
                 currentAttack++;
                 if(hasEffectSound){
@@ -296,6 +265,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetMouseButtonDown(1) && !isRolling && skills.Contains(skillBlock) && currentMana >= skillBlock.mana)
         {
             reduceMana(skillBlock);
+            timeIsBlock = 0;
             animator.SetTrigger("Block");
             animator.SetBool("IdleBlock", true);
         }
@@ -349,9 +319,16 @@ public class PlayerController : MonoBehaviour
                 animator.SetInteger("AnimState", 0);
         }
 
-        // giao tiếp vs NPC
+        // giao tiếp vs NPC khi nhấn Z
         if(Input.GetKeyDown(KeyCode.Z)){
             InteractNPC();
+        }
+
+        // giao tiếp vs teleport khi nhân G
+        if(Input.GetKeyDown(KeyCode.G)){
+            if(currentTeleporter != null){
+                transform.position = currentTeleporter.GetComponent<Teleport>().GetDestination().position;
+            }
         }
     }
 
@@ -421,15 +398,14 @@ public class PlayerController : MonoBehaviour
     }
 
     // load data cho character
-    private void LoadDataCharacter(){
+    private void LoadDataLevelCharacter(){
+        
         Level thisLevel = getCurrentLevel();
-        coins = PlayerPrefs.GetInt("coins", 100000);   
         maxHealth = thisLevel.maxHealth;
-        currentHealth = PlayerPrefs.GetInt("CurrentHealth", 1000);
         maxMana = thisLevel.maxMana;
-        currentMana = PlayerPrefs.GetInt("CurrentMana", 1000);
         dame = thisLevel.dameAttack;
         defense = thisLevel.defense;
+        // StartCoroutine(GetDataUser());
     }
 
 
@@ -508,6 +484,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other){
+        if(other.CompareTag("Tele")){
+            currentTeleporter = other.gameObject;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other){
+        if(other.CompareTag("Tele")){
+            currentTeleporter = null;
+        }
+    }
     public Level getCurrentLevel(){
         return levels.Find(level => level.idLevel == idLevelCurrent);
     }
@@ -530,7 +516,7 @@ public class PlayerController : MonoBehaviour
         idLevelCurrent++;
         PlayerPrefs.SetInt("idLevel", idLevelCurrent);
         Debug.Log("UpgradeLevel " + idLevelCurrent);
-        LoadDataCharacter();
+        LoadDataLevelCharacter();
         currentMana += 1000;
         currentHealth += 1000;
         PlayerPrefs.SetInt("CurrentHealth", currentHealth);
@@ -542,7 +528,224 @@ public class PlayerController : MonoBehaviour
     public void reduceHealth(int dame){
         animator.SetTrigger("Hurt");
         int dameNeedReduce = dame - GetDefense();
+
+        if(timeIsBlock <=0.2f){
+            // giảm đc 80%
+            dameNeedReduce = (int) (dameNeedReduce * 0.2f);
+        }
         currentHealth = currentHealth - dameNeedReduce;
+        
         PlayerPrefs.SetInt("CurrentHealth", currentHealth);
+        if(currentHealth<= 0){
+            if(hasEffectSound){
+                audioSource.clip = hurtAudio;
+                audioSource.Play();
+            }
+            animator.SetBool("noBlood", noBlood);
+            animator.SetTrigger("Death");
+            currentHealth = (int)0.7f*maxHealth;
+            currentMana = (int)0.7f*maxMana;
+            PlayerPrefs.SetInt("CurrentHealth", currentHealth);
+            PlayerPrefs.SetInt("CurrentMana", currentMana);
+            transform.position = startPosition;
+        }
+    }
+    // load all skill có trong game
+    private async void GetDataSkill(){
+        string urlRequest = ConstantServer.URL_SKILLS;
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+        if(www.error != null){
+                // Debug.Log("Error : " + www.error);
+        }
+        else{            
+            GameController.instance.skillPlayer = JsonConvert.DeserializeObject<List<Skill>>(www.downloadHandler.text);
+            // mặc định
+            foreach(var i in GameController.instance.skillPlayer){
+                if(i.id == "jump"){
+                    skillJump = i;
+                    skills.Add(skillJump);
+                }
+                else if(i.id == "rolling"){
+                    skillRolling = i;
+                    skills.Add(skillRolling);
+                }
+                else if(i.id == "block"){
+                    skillBlock = i;
+                    skills.Add(skillBlock);
+                }
+                else if(i.id == "attack1"){
+                    skillAttack1 = i;
+                    skills.Add(skillAttack1);
+                }
+                if(i.id == "attack2"){
+                    skillAttack2 = i;
+                }
+                else if(i.id == "attack3"){
+                    skillAttack3 = i;
+                }   
+            }
+            // set các skill đã học
+            GetDataSkillPlayer(); 
+        }
+
+    }
+
+    private async void GetDataSkillPlayer(){
+        string urlRequest = ConstantServer.URL_ACCOUNT + "/" +DBManager.USERNAME + "/skills" ;
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+
+        if(www.error != null){
+            Debug.Log("Error : " + www.error);
+        }
+        else{
+            Debug.Log("Result "+ www.downloadHandler.text);
+            List<SkillUserDTO> skillUserDtos = JsonConvert.DeserializeObject<List<SkillUserDTO>>(www.downloadHandler.text);
+            foreach( var i in skillUserDtos){
+                if(i.idSkill == "attack2"){
+                    skills.Add(skillAttack2);
+                }
+                else if(i.idSkill == "attack3"){
+                    skills.Add(skillAttack3);
+                }
+            }
+            
+            
+            GetDataUser();
+            // LoadDataLevelCharacter();
+        }
+
+    }
+ 
+
+
+    // get all level 
+    private async void LoadLevels(){
+        var urlRequest = ConstantServer.URL_LEVELS;
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+
+        if(www.error != null){
+            Debug.Log("Error : " + www.error);
+        }
+        else{
+            Debug.Log("Result "+ www.downloadHandler.text);
+            levels = JsonConvert.DeserializeObject<List<Level>>(www.downloadHandler.text);
+            
+            
+            GetDataUser();
+            // LoadDataLevelCharacter();
+        }
+    }
+
+    private async void GetDevilFruit(){
+        string username = DBManager.USERNAME;
+        string urlRequest = ConstantServer.URL_ACCOUNT + "/" + username + "/devil-fruits";
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+
+        if(www.error != null){
+            Debug.Log("Error : " + www.error);
+        }
+        else{
+            Debug.Log("Result "+ www.downloadHandler.text);
+            List<DevilFruitUsenameDTO> results =  JsonConvert.DeserializeObject<List<DevilFruitUsenameDTO>>(www.downloadHandler.text);
+            GameController.instance.devilFruit = new HashSet<int>();
+            foreach(var i in results){
+                GameController.instance.devilFruit.Add(i.id);
+            }
+        }
+    }
+
+    //check xem id nay co trong skill Khong
+    public bool HasSkillByID(string idSkill){
+        bool hasSkill = false;
+        foreach (var exist in skills)
+        {
+            if(exist.id == idSkill){
+                hasSkill= true;
+            }
+        }
+
+        if(hasSkill){
+            return true;
+        }
+        return false;
+    }
+
+    public void AddSkillByID(string idSkill){
+        if(idSkill == "jump"){
+            skills.Add(skillJump);
+        }
+        else if(idSkill == "rolling"){
+            skills.Add(skillRolling);
+        }
+        else if(idSkill == "block"){
+            skills.Add(skillBlock);
+        }
+        else if(idSkill == "attack1"){
+            skills.Add(skillAttack1);
+        }
+        else if(idSkill == "attack2"){
+            skills.Add(skillAttack2);
+        }
+        else if(idSkill == "attack3"){
+            skills.Add(skillAttack3);
+        }
+    }
+
+    // load  position, coin, current mana, current health
+    private async void GetDataUser(){
+        string username = DBManager.USERNAME;
+        string urlRequest = ConstantServer.URL_ACCOUNT+"/"+username;
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+
+       
+        if(www.error != null){
+            Debug.Log("Error : " + www.error);
+        }
+        else{
+            Debug.Log("Result "+ www.downloadHandler.text);
+            // var test = JSON.Parse(www.downloadHandler.text);
+            AccountDTO userData = new AccountDTO();
+            userData = JsonConvert.DeserializeObject<AccountDTO>(www.downloadHandler.text);
+
+            startPosition = new Vector3(userData.x, userData.y, 0);
+            transform.position = startPosition;
+            coins = userData.coin;
+            PlayerPrefs.SetInt("coins", coins);
+            idLevelCurrent = userData.idLevel;
+            currentMana = userData.currentMana;
+            currentHealth = userData.currentHealth;
+            PlayerPrefs.SetInt("CurrentMana", currentMana);
+            PlayerPrefs.SetInt("CurrentHealth", currentHealth);
+            PlayerPrefs.SetInt("idLevel",idLevelCurrent);
+            idLevelCurrent = PlayerPrefs.GetInt("idLevel");
+            Debug.Log("Info " + www.downloadHandler.text);
+            LoadDataLevelCharacter();
+
+        }
     }
 }

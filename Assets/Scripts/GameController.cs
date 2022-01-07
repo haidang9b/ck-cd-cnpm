@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+
 public enum EquipmentType{
     Weapon,
     Armor
@@ -36,7 +40,14 @@ public class GameController : MonoBehaviour
     private Item weaponCurrent = null;
     private Item armorCurrent = null;
 
+    // set devilFruit
+    public HashSet<int> devilFruit = new HashSet<int>();
 
+    // skill learned
+    public List<Skill> skillPlayer = new List<Skill>();
+
+    // all item
+    public List<Item> itemsInGame;
     public Text cointCurrentText;
     // Start is called before the first frame update
     void Awake(){
@@ -52,6 +63,7 @@ public class GameController : MonoBehaviour
         
     }
 
+    
     // hiển thị item trong inventory
     private void DisplayItems(){
         for(int i = 0; i< itemsInventory.Count;i++){
@@ -90,6 +102,7 @@ public class GameController : MonoBehaviour
     }
     void Start()
     {
+        
         audioSource = GetComponent<AudioSource>();
         player = GameObject.FindGameObjectWithTag("Player");
         InitData();
@@ -97,7 +110,7 @@ public class GameController : MonoBehaviour
         // cần check sound + effect
         float vol = PlayerPrefs.GetFloat("Volume");
         AudioListener.volume = vol;
-
+        GetInventoryItems();
         DisplayItems();
 
     }
@@ -254,4 +267,49 @@ public class GameController : MonoBehaviour
         weaponCurrent = null;
         DisplayItemsEquipment();
     }
+
+    public void ClearEquipment(){
+        if(armorCurrent != null){
+            AddItemToInventory(armorCurrent);
+            armorCurrent = null;
+            DisplayItemsEquipment();
+        }
+        if(weaponCurrent != null){
+            AddItemToInventory(weaponCurrent);
+            weaponCurrent = null;
+            DisplayItemsEquipment();
+        }
+    }
+
+    private async void GetInventoryItems(){
+        string urlRequest = ConstantServer.URL_INVENTORY_USER +  DBManager.USERNAME;
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+        
+        if(www.error != null){
+                Debug.Log("Error : " + www.error);
+        }
+        else{
+            Debug.Log("Result "+ www.downloadHandler.text);
+            List<InventoryUserDTO> inventories = new List<InventoryUserDTO>();
+            inventories = JsonConvert.DeserializeObject<List<InventoryUserDTO>>(www.downloadHandler.text);
+
+            foreach(InventoryUserDTO iu in inventories){
+                Debug.Log("name : " + iu.idItem);
+                Item exist = itemsInGame.Find(x => x.idItem == iu.idItem);
+                if(exist){
+                    for(int j = 0; j< iu.quantity ; j++){
+                        AddItemToInventory(exist);
+                    }
+                }
+            }
+            DisplayItems();
+
+        }
+    }
+
 }

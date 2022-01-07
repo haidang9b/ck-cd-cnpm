@@ -17,5 +17,5 @@ MonoBehaviour:
   itemDescription: HP Mini +50 HP
   slug: Assets/Sprites/UI/hp.png
   itemSpite: {fileID: 21300000, guid: 5ac25e4613d130548af83c6038636908, type: 3}
-  price: 5
+  price: 50
   rateHP: 50

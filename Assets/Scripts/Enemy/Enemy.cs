@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EnemyState
+{
+    idle,
+    follow,
+    attack,
+    back
+}
+
 public class Enemy : MonoBehaviour
 {
     public int idEnemy { get; set;}

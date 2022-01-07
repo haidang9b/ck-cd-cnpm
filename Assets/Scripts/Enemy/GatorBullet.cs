@@ -18,4 +18,15 @@ public class GatorBullet : MonoBehaviour
     {
         this.GetComponent<Rigidbody2D>().velocity = (player.transform.position - this.transform.position).normalized * speed;
     }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            player.GetComponent<PlayerController>().reduceHealth(100);
+            Destroy(this.gameObject);
+            Debug.Log("OnCollisionEnter2D");
+        }
+    }
+
 }

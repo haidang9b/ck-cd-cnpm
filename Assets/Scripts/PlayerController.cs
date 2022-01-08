@@ -359,8 +359,8 @@ public class PlayerController : MonoBehaviour
         }
         
         foreach(Collider2D e in hitEnemies){
-            e.gameObject.GetComponent<EnemyController>().ReduceHealth(GetDame());
-            Debug.Log("we hit "+ e.name + " dame " +GetDame());
+            e.gameObject.GetComponent<Enemy>().ReduceHealth(GetDame());
+            // Debug.Log("we hit "+ e.name + " dame " +GetDame());
         }
     }
     // xử lý nhảy
@@ -400,7 +400,10 @@ public class PlayerController : MonoBehaviour
     // load data cho character
     private void LoadDataLevelCharacter(){
         
-        Level thisLevel = getCurrentLevel();
+        Level thisLevel =  getCurrentLevel();
+        // while(thisLevel == null){
+        //     thisLevel = getCurrentLevel();
+        // }
         maxHealth = thisLevel.maxHealth;
         maxMana = thisLevel.maxMana;
         dame = thisLevel.dameAttack;
@@ -515,7 +518,7 @@ public class PlayerController : MonoBehaviour
     public void UpgradeLevel(){
         idLevelCurrent++;
         PlayerPrefs.SetInt("idLevel", idLevelCurrent);
-        Debug.Log("UpgradeLevel " + idLevelCurrent);
+        // Debug.Log("UpgradeLevel " + idLevelCurrent);
         LoadDataLevelCharacter();
         currentMana += 1000;
         currentHealth += 1000;
@@ -543,8 +546,8 @@ public class PlayerController : MonoBehaviour
             }
             animator.SetBool("noBlood", noBlood);
             animator.SetTrigger("Death");
-            currentHealth = (int)0.7f*maxHealth;
-            currentMana = (int)0.7f*maxMana;
+            currentHealth = (int)(0.7f*maxHealth);
+            currentMana = (int)(0.7f*maxMana);
             PlayerPrefs.SetInt("CurrentHealth", currentHealth);
             PlayerPrefs.SetInt("CurrentMana", currentMana);
             transform.position = startPosition;
@@ -560,7 +563,7 @@ public class PlayerController : MonoBehaviour
             await Task.Yield();
         }
         if(www.error != null){
-                // Debug.Log("Error : " + www.error);
+            Debug.Log("Error GetDataSkill : " + www.error);
         }
         else{            
             GameController.instance.skillPlayer = JsonConvert.DeserializeObject<List<Skill>>(www.downloadHandler.text);
@@ -605,10 +608,9 @@ public class PlayerController : MonoBehaviour
         }
 
         if(www.error != null){
-            Debug.Log("Error : " + www.error);
+            Debug.Log("Error GetDataSkillPlayer: " + www.error);
         }
         else{
-            Debug.Log("Result "+ www.downloadHandler.text);
             List<SkillUserDTO> skillUserDtos = JsonConvert.DeserializeObject<List<SkillUserDTO>>(www.downloadHandler.text);
             foreach( var i in skillUserDtos){
                 if(i.idSkill == "attack2"){
@@ -625,7 +627,10 @@ public class PlayerController : MonoBehaviour
         }
 
     }
- 
+    // cộng tiền cho user
+    public void AddCoins(int _coins){
+        coins += _coins;
+    }
 
 
     // get all level 
@@ -639,12 +644,12 @@ public class PlayerController : MonoBehaviour
         }
 
         if(www.error != null){
-            Debug.Log("Error : " + www.error);
+            Debug.Log("Error LoadLevels: " + www.error);
         }
         else{
-            Debug.Log("Result "+ www.downloadHandler.text);
+            // Debug.Log("Result "+ www.downloadHandler.text);
             levels = JsonConvert.DeserializeObject<List<Level>>(www.downloadHandler.text);
-            
+            // Debug.Log(JsonConvert.SerializeObject(levels));
             
             GetDataUser();
             // LoadDataLevelCharacter();
@@ -662,10 +667,9 @@ public class PlayerController : MonoBehaviour
         }
 
         if(www.error != null){
-            Debug.Log("Error : " + www.error);
+            Debug.Log("Error GetDevilFruit: " + www.error);
         }
         else{
-            Debug.Log("Result "+ www.downloadHandler.text);
             List<DevilFruitUsenameDTO> results =  JsonConvert.DeserializeObject<List<DevilFruitUsenameDTO>>(www.downloadHandler.text);
             GameController.instance.devilFruit = new HashSet<int>();
             foreach(var i in results){
@@ -727,11 +731,9 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Error : " + www.error);
         }
         else{
-            Debug.Log("Result "+ www.downloadHandler.text);
-            // var test = JSON.Parse(www.downloadHandler.text);
             AccountDTO userData = new AccountDTO();
             userData = JsonConvert.DeserializeObject<AccountDTO>(www.downloadHandler.text);
-
+            // Debug.Log(www.downloadHandler.text);
             startPosition = new Vector3(userData.x, userData.y, 0);
             transform.position = startPosition;
             coins = userData.coin;
@@ -743,9 +745,8 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetInt("CurrentHealth", currentHealth);
             PlayerPrefs.SetInt("idLevel",idLevelCurrent);
             idLevelCurrent = PlayerPrefs.GetInt("idLevel");
-            Debug.Log("Info " + www.downloadHandler.text);
+            // Debug.Log(idLevelCurrent);
             LoadDataLevelCharacter();
-
         }
     }
 }

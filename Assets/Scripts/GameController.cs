@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
 
     // set devilFruit
     public HashSet<int> devilFruit = new HashSet<int>();
+    public HashSet<int> enemiesKilled = new HashSet<int>();
 
     // skill learned
     public List<Skill> skillPlayer = new List<Skill>();
@@ -79,7 +80,7 @@ public class GameController : MonoBehaviour
 
         for(int i = 0; i< slots.Length; i++ ){
             if(i < itemsInventory.Count){
-                Debug.Log("Type items: "+ itemsInventory[i].GetType());
+                // Debug.Log("Type items: "+ itemsInventory[i].GetType());
                 slots[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1,1,1,1);
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = itemsInventory[i].itemSpite;
 
@@ -112,6 +113,7 @@ public class GameController : MonoBehaviour
         AudioListener.volume = vol;
         GetInventoryItems();
         DisplayItems();
+        GetEnemiesKilled();
 
     }
 
@@ -280,6 +282,28 @@ public class GameController : MonoBehaviour
             DisplayItemsEquipment();
         }
     }
+    private async void GetEnemiesKilled(){
+        string urlRequest = ConstantServer.URL_ACCOUNT + "/" + DBManager.USERNAME + "/killed";
+        using var www = UnityWebRequest.Get(urlRequest);
+        www.SetRequestHeader("Authorization",DBManager.TOKEN);
+        var operation = www.SendWebRequest();
+        while(operation.isDone == false){
+            await Task.Yield();
+        }
+        
+        if(www.error != null){
+            Debug.Log("Error : " + www.error);
+        }
+        else{
+            // Debug.Log("Result EnemyKilledDTO "+ www.downloadHandler.text);
+            List<EnemyKilledDTO> result = new List<EnemyKilledDTO>();
+            result = JsonConvert.DeserializeObject<List<EnemyKilledDTO>>(www.downloadHandler.text);
+            // Debug.Log(www.downloadHandler.text);
+            foreach(EnemyKilledDTO e in result){
+                enemiesKilled.Add(e.idEnemy);
+            }
+        }
+    }
 
     private async void GetInventoryItems(){
         string urlRequest = ConstantServer.URL_INVENTORY_USER +  DBManager.USERNAME;
@@ -294,12 +318,12 @@ public class GameController : MonoBehaviour
                 Debug.Log("Error : " + www.error);
         }
         else{
-            Debug.Log("Result "+ www.downloadHandler.text);
+            // Debug.Log("Result "+ www.downloadHandler.text);
             List<InventoryUserDTO> inventories = new List<InventoryUserDTO>();
             inventories = JsonConvert.DeserializeObject<List<InventoryUserDTO>>(www.downloadHandler.text);
 
             foreach(InventoryUserDTO iu in inventories){
-                Debug.Log("name : " + iu.idItem);
+                // Debug.Log("name : " + iu.idItem);
                 Item exist = itemsInGame.Find(x => x.idItem == iu.idItem);
                 if(exist){
                     for(int j = 0; j< iu.quantity ; j++){

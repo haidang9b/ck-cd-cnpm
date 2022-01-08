@@ -108,6 +108,7 @@ public class SaveUserDTO
     public List<DevilFruitDTO>  devilFruit {get;set;}
 
     public List<SkillIDDTO> skill {get;set;}
+    public List<EnemyIDDTO> enemy {get;set;}
 }
 
 
@@ -120,4 +121,22 @@ public class SkillUserDTO{
 [System.Serializable]
 public class SkillIDDTO {
     public string id { get;set;}
+}
+[System.Serializable]
+public class LoginDTO
+{
+    public string username { get; set;}
+    public string password { get;set;}
+}
+
+[System.Serializable]
+public class EnemyIDDTO{
+    public int id { get; set;}
+}
+
+[System.Serializable]
+public class EnemyKilledDTO{
+    public int id { get; set;}
+    public string username {get;set;}
+    public int idEnemy {get;set;}
 }

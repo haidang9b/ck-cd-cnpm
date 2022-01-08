@@ -33,7 +33,7 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
         GetThisItem();
         if(thisItem != null){
             
-            Debug.Log("Enter " + thisItem.itemName + " slot");
+            // Debug.Log("Enter " + thisItem.itemName + " slot");
             tooltip.ShowTooltip();
             tooltip.UpdateTooltip(GetToolTipDescription(thisItem));
             RectTransformUtility.ScreenPointToLocalPointInRectangle(GameObject.Find("Canvas").transform as RectTransform, Input.mousePosition, null, out positionDisplay);
@@ -76,7 +76,7 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
     {
         GetThisItem();
         if(thisItem != null){
-            Debug.Log("Exit " + thisItem.itemName + " slot");
+            // Debug.Log("Exit " + thisItem.itemName + " slot");
             tooltip.HideTooltip();
             tooltip.UpdateTooltip("");
         }
@@ -89,7 +89,7 @@ public class ItemInventoryBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
         if(eventData.button == PointerEventData.InputButton.Left  && eventData.clickCount == 2){
             GetThisItem();
             if(thisItem != null){
-                Debug.Log("Name item clicked : " + thisItem.itemName ); 
+                // Debug.Log("Name item clicked : " + thisItem.itemName ); 
                 if(thisItem.GetType().ToString() == "Weapon" || thisItem.GetType().ToString() == "Armor"){
                     GameController.instance.AddItemToEquipment(thisItem);
                     GameController.instance.RemoveItemInInventory(thisItem);

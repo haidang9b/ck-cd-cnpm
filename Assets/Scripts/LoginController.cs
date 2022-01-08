@@ -9,7 +9,10 @@ public class LoginController : MonoBehaviour
 {
     public InputField UsernameTextField;
     public InputField PasswordTextField;
+
+    private bool inPageLogin = true;
     public Text ErrorText;
+    public Text LoginText;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,14 +26,63 @@ public class LoginController : MonoBehaviour
     }
 
     public void ClickLogin(){
-        string username = UsernameTextField.text;
-        string password = PasswordTextField.text;
 
-        if(username.Length == 0 || password.Length == 0){
-            ErrorText.text = "Please enter your username and password.";
-            return;
+        if(inPageLogin){
+            string username = UsernameTextField.text;
+            string password = PasswordTextField.text;
+
+            if(username.Length == 0 || password.Length == 0){
+                ErrorText.text = "Please enter your username and password.";
+                return;
+            }
+            StartCoroutine(Login(username, password));
         }
-        StartCoroutine(Login(username, password));
+        else{
+            LoginText.text = "LOGIN";
+            UsernameTextField.text = "";
+            PasswordTextField.text = "";
+            ErrorText.text = "";
+            inPageLogin = true;
+        }
+    }
+
+    public void ClickRegister(){
+        if(inPageLogin){
+            LoginText.text = "Register";
+            UsernameTextField.text = "";
+            PasswordTextField.text = "";
+            ErrorText.text = "";
+            inPageLogin = false;
+        }
+        else{
+            string username = UsernameTextField.text;
+            string password = PasswordTextField.text;
+            if(username.Length == 0 || password.Length == 0){
+                ErrorText.text = "Please enter your username and password.";
+                return;
+            }
+            StartCoroutine(Register(username, password));
+        }
+    }
+
+    IEnumerator Register(string user, string pass){
+        LoginDTO login = new LoginDTO{username = user, password = pass};
+        string logindataJsonString = JsonConvert.SerializeObject(login);
+        var www = new UnityWebRequest (ConstantServer.URL_REGISTER, "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(logindataJsonString);
+        www.uploadHandler = (UploadHandler) new UploadHandlerRaw(bodyRaw);
+        www.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");
+        yield return www.SendWebRequest();
+
+        if (www.error != null)
+        {
+            ErrorText.text = "This username already exists";
+        }
+        else
+        {
+            ErrorText.text = "Register successfully";
+        }
     }
 
     // gửi request login và lấy token
@@ -47,27 +99,12 @@ public class LoginController : MonoBehaviour
         if (www.error != null)
         {
             ErrorText.text = "Username or password incorrect.";
-            // Debug.Log("Error: " + www.error);
         }
         else
         {
-            // ErrorText.text = "Login OK";
-            // Dictionary<string,string> hdrs = www.GetResponseHeaders();
-            // string s = "";
-            // foreach (KeyValuePair<string,string> hdr in hdrs) {
-            //     s += hdr.Key + " => " + hdr.Value + "\n";
-            // }
-            // Debug.Log(s);
-            Debug.Log("token "+ www.downloadHandler.text);
             DBManager.TOKEN = www.downloadHandler.text;
             DBManager.USERNAME = user;
             PlayerPrefs.SetString("token",  www.downloadHandler.text);
-            // while (PlayerPrefs.GetString("token" ) == "") {
-            //     DBManager.TOKEN = www.downloadHandler.text;
-            //     DBManager.USERNAME = user;
-            //     PlayerPrefs.SetString("token",  www.downloadHandler.text);
-            // }
-            // Debug.Log("token is mmmmmm "+ www.GetResponseHeader("token"));
             PlayerPrefs.Save();
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
         }
@@ -76,8 +113,4 @@ public class LoginController : MonoBehaviour
     private IEnumerator waiting(){
         yield return new WaitForSeconds(2);
     }
-
-
-
-    
 }

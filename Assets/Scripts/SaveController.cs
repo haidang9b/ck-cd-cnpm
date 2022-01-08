@@ -61,13 +61,11 @@ public class SaveController : MonoBehaviour
         }
         if (www.error != null)
         {
-            Debug.Log("data post: " + saveDataJsonString);
-            Debug.Log("Error: " + www.error);
+            Debug.Log("Error SaveGame: " + www.error);
         }
         else
         {
-            Debug.Log("data post: " + saveDataJsonString);
-            Debug.Log("Save Game: OK OK OK");
+            Debug.Log("Save Game: OK ");
         }
     }
 
@@ -117,6 +115,12 @@ public class SaveController : MonoBehaviour
         }
         saveData.devilFruit = dvfs;
         saveData.skill = skillIDDTOs;
+
+        List<EnemyIDDTO> es = new List<EnemyIDDTO>();
+        foreach(var j in GameController.instance.enemiesKilled){
+            es.Add( new EnemyIDDTO{id = j});
+        }
+        saveData.enemy = es;
         return saveData;
     }
     public void DontSave(){

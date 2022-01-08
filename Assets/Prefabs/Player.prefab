@@ -300,7 +300,8 @@ MonoBehaviour:
   attackPointRight: {fileID: 1017422261}
   attackPointLeft: {fileID: 914238668}
   attackRange: 0.5
-  maxHeath: 0
+  idLevelCurrent: 0
+  maxHealth: 0
   currentHealth: 0
   maxMana: 0
   currentMana: 0
@@ -316,6 +317,8 @@ MonoBehaviour:
   jumpAudio: {fileID: 8300000, guid: cf1dd80842ec88a46980ba06624018bc, type: 3}
   rollAudio: {fileID: 8300000, guid: bead1785ef1b072428c4f14402e7ac5b, type: 3}
   hurtAudio: {fileID: 8300000, guid: 737a05e35de742b4ea8414458954e18a, type: 3}
+  period: 1
+  timeIsBlock: 1
 --- !u!82 &1299079533
 AudioSource:
   m_ObjectHideFlags: 0

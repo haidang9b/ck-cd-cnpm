@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
 {
     public GameObject MainPanel;
     public GameObject OptionPanel;
+    public GameObject GuidePanel;
     private AudioSource audioSource;    
     public Slider volumeSlider;
     public Toggle toggleMusic;
@@ -30,7 +31,6 @@ public class MenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Debug.Log("Token :;;; "+ PlayerPrefs.GetString("token"));
         float vol = PlayerPrefs.GetFloat("Volume");
         AudioListener.volume = vol;
 
@@ -45,7 +45,6 @@ public class MenuController : MonoBehaviour
                 audioSource.Pause();
             }
         }
-        // Debug.Log("has music " + PlayerPrefs.GetInt("HasMusic"));
     }
 
     // load data nếu chơi game cũ
@@ -92,6 +91,15 @@ public class MenuController : MonoBehaviour
         }
 
     }
+    public void OpenGuide(){
+        MainPanel.SetActive(false);
+        GuidePanel.SetActive(true);
+    }
+    public void CloseGuide(){
+        Debug.Log("click");
+        MainPanel.SetActive(true);
+        GuidePanel.SetActive(false);
+    }
 
     // start game mới
     public void NewGame(){
@@ -115,7 +123,7 @@ public class MenuController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Rest to new Game: OK OK OK");
+            Debug.Log("Rest to new Game:OK");
         }
     }
 

@@ -76,7 +76,7 @@ public class InfoController : MonoBehaviour
         foreach(Skill skill in skills){
             foreach(var item in areaSkills){
                 if(skill.name == item.name){
-                    Debug.Log("Đã nhận " + skill.name);
+                    // Debug.Log("Đã nhận " + skill.name);
                     item.transform.GetChild(0).GetComponent<Image>().color = new Color(1,1,1,1);
                 }
             }

@@ -6,6 +6,7 @@ public class GatorBullet : MonoBehaviour
 {
     private float speed = 3f;
     private GameObject player;
+    private int dame = 100;
 
     // Start is called before the first frame update
     void Start()
@@ -18,4 +19,17 @@ public class GatorBullet : MonoBehaviour
     {
         this.GetComponent<Rigidbody2D>().velocity = (player.transform.position - this.transform.position).normalized * speed;
     }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            player.GetComponent<PlayerController>().reduceHealth(this.dame);
+            Destroy(this.gameObject);
+        }
+    }
+    public void SetDame(int dame){
+        this.dame = dame;
+    }
+
 }

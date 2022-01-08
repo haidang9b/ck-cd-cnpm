@@ -1506,7 +1506,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ...Because it's supposed to be the key to getting out of here.
+  m_Text: ...Because it's supposed to be the key to get out of here.
 --- !u!222 &2134438457
 CanvasRenderer:
   m_ObjectHideFlags: 0
